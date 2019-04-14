@@ -1,0 +1,48 @@
+
+/* Class = "NSButtonCell"; title = "Create ISO"; ObjectID = "A0P-KF-598"; */
+"A0P-KF-598.title" = "Create ISO";
+
+/* Class = "NSMenuItem"; title = "All messages"; ObjectID = "Bu9-4b-v79"; */
+"Bu9-4b-v79.title" = "All messages";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "D6G-C1-UXx"; */
+"D6G-C1-UXx.title" = "Cancel";
+
+/* Class = "NSTextFieldCell"; title = "Output:"; ObjectID = "NUW-rX-Sgg"; */
+"NUW-rX-Sgg.title" = "Output:";
+
+/* Class = "NSMenuItem"; title = "Default"; ObjectID = "QhB-ce-Jax"; */
+"QhB-ce-Jax.title" = "Default";
+
+/* Class = "NSWindow"; title = "Installer App To ISO"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Installer App To ISO";
+
+/* Class = "NSMenuItem"; title = "Commands"; ObjectID = "UXn-pH-Q7R"; */
+"UXn-pH-Q7R.title" = "Commands";
+
+/* Class = "NSTextFieldCell"; title = "Installer:"; ObjectID = "WnM-i8-lrC"; */
+"WnM-i8-lrC.title" = "Installer:";
+
+/* Class = "NSTextFieldCell"; placeholderString = "macOS Installer App name"; ObjectID = "j5v-HL-S40"; */
+"j5v-HL-S40.placeholderString" = "macOS Installer App name";
+
+/* Class = "NSTextFieldCell"; title = "Log Detail:"; ObjectID = "mE1-55-M5L"; */
+"mE1-55-M5L.title" = "Log Detail:";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Drop Installer File"; ObjectID = "nkK-fc-Hoq"; */
+"nkK-fc-Hoq.placeholderString" = "Drop Installer File";
+
+/* Class = "NSButtonCell"; title = "\"Dry\" run"; ObjectID = "pWH-gU-eFh"; */
+"pWH-gU-eFh.title" = "\"Dry\" run";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[0] = "Item 1"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[0]" = "Item 1";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[1] = "Item 2"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[1]" = "Item 2";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[2] = "Item 3"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[2]" = "Item 3";
+
+/* Class = "NSMenuItem"; title = "Quiet"; ObjectID = "yoS-1Z-V9A"; */
+"yoS-1Z-V9A.title" = "Quiet";

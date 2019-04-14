@@ -1,0 +1,27 @@
+#!/bin/sh
+
+DIR_IN=$1
+DIR_OUT=$2
+
+PANDOC=/usr/local/bin/pandoc
+
+rm -rf $DIR_OUT
+mkdir -p $DIR_OUT
+
+if [ ! -e $PANDOC ]; then
+	echo "Please install $PANDOC - it is available via homebrew"
+	exit 1
+fi
+
+for doc in $DIR_IN/*.md
+do
+	name=$(basename $doc .md)
+	$PANDOC $doc -t html -s \
+			-H $DIR_IN/style.link \
+			-A $DIR_IN/footer.html \
+			-B $DIR_IN/header.html \
+			-o $DIR_OUT/$name.html
+done
+
+cp -Rv $DIR_IN/images $DIR_OUT/
+cp $DIR_IN/help.css $DIR_OUT/
