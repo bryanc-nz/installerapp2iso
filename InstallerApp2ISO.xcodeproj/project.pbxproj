@@ -288,7 +288,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $PROJECT_DIR\nchmod +x scripts/prebuild.sh\nsh scripts/prebuild.sh\n\nchmod +x scripts/setversion.sh\nif [ x$CONFIGURATION = x\"Release\" ]; then\n    sh scripts/setversion.sh $PROJECT_DIR/InstallToISO/Info.plist\nfi\n";
+			shellScript = "cd $PROJECT_DIR\nchmod +x scripts/prebuild.sh\nsh scripts/prebuild.sh\n\nchmod +x scripts/setversion.sh\nif [ x$CONFIGURATION = x\"Release\" ]; then\n    sh scripts/setversion.sh $PROJECT_DIR/InstallerApp2ISO/Info.plist\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
