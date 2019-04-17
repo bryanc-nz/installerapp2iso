@@ -248,26 +248,58 @@ class InstallToISOWindow : NSWindowController {
 		let args = ["-c", cmd]
 
 		m_proc = Execute.readPipe("/bin/bash", args: args, env: env) {
-			[weak self] text in
-			if text == "__EOF__" {
-				main_async {
-					[weak self] in
-					if let this = self {
-						this.m_proc = nil
-						this.enableControls()
-						NSApp.activate(ignoringOtherApps: true)
-						this.removeTmpDirectory()
-					}
+			[weak self] text_in in
+			if let text = text_in {
+				//Swift.print(text)
+				if let this = self {
+					let t = this.stripTerminalEscape(text)
+					this.addText(t)
 				}
 				return
 			}
-			//Swift.print(text)
-			self?.addText(text)
+
+			// nil text implies we're finished
+			main_async {
+				[weak self] in
+				if let this = self {
+					this.m_proc = nil
+					this.enableControls()
+					NSApp.activate(ignoringOtherApps: true)
+					this.removeTmpDirectory()
+				}
+			}
 		}
+	}
+
+	var m_stripnext = 0
+	func stripTerminalEscape(_ text: String) -> String
+	{
+		/*
+			terminal escapes are of the format: esc [ x
+			get rid of them.
+
+			NB - the escape sequence may cross a text buffer boundary - we need global state
+		*/
+
+		let esc = Character("\u{1b}")
+		var s = ""
+
+		for c in text {
+			if c == esc {
+				m_stripnext = 2
+			} else if m_stripnext > 0 {
+				m_stripnext -= 1
+			} else {
+				s += String(c)
+			}
+		}
+
+		return s
 	}
 
 	func addText(_ text: String, append: Bool = true)
 	{
+		if text.count == 0 { return }
 		main_async {
 			[weak self] in
 			if let this = self {

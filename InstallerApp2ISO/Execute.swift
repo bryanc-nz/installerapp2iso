@@ -26,7 +26,7 @@ class Execute {
 		proc.cleanup()
 	}
 
-	static func readPipe(_ prog: String, args: [String], env: [String : String]? = nil, reader: @escaping ((String)->Void)) -> Process?
+	static func readPipe(_ prog: String, args: [String], env: [String : String]? = nil, reader: @escaping ((String?)->Void)) -> Process?
 	{
 		var failed = false
 		let proc = Process()
@@ -40,7 +40,7 @@ class Execute {
 			handle in
 			let data = handle.availableData
 			if data.count == 0 {
-				reader("__EOF__")
+				reader(nil)
 				closePipe(process: proc)
 			} else if let text = String(data: data, encoding: String.Encoding.utf8) {
 				reader(text)
