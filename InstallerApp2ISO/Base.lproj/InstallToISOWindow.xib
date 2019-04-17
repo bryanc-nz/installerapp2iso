@@ -16,6 +16,7 @@
                 <outlet property="m_output_choose" destination="jaF-4y-8G4" id="8Z4-uh-sAb"/>
                 <outlet property="m_path" destination="YF7-Yg-CgC" id="FPZ-dZ-kQq"/>
                 <outlet property="m_scrollview" destination="yTK-xD-dgd" id="Nb0-rk-iHi"/>
+                <outlet property="m_show_in_finder" destination="4SC-Pw-3dQ" id="fOG-39-JsG"/>
                 <outlet property="m_verbose" destination="pMq-Ey-Etj" id="zB4-7q-LBD"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="d5e-Ro-9Y9"/>
             </connections>
@@ -27,7 +28,7 @@
             <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
             <rect key="contentRect" x="1092" y="724" width="591" height="256"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
-            <value key="minSize" type="size" width="480" height="256"/>
+            <value key="minSize" type="size" width="591" height="256"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
                 <rect key="frame" x="0.0" y="0.0" width="591" height="256"/>
                 <autoresizingMask key="autoresizingMask"/>
@@ -181,8 +182,19 @@ Gw
                             <action selector="outputChoose:" target="-2" id="J46-2B-haH"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" id="4SC-Pw-3dQ">
+                        <rect key="frame" x="394" y="110" width="136" height="32"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="push" title="Show in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0bc-Fv-Hfp">
+                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                        <connections>
+                            <action selector="showInFinder:" target="-2" id="BFV-h0-wUU"/>
+                        </connections>
+                    </button>
                     <button verticalHuggingPriority="750" id="fkl-j3-3JN">
-                        <rect key="frame" x="386" y="153" width="140" height="18"/>
+                        <rect key="frame" x="398" y="153" width="128" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>

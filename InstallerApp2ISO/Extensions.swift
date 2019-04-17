@@ -9,6 +9,25 @@
 import Foundation
 import Cocoa
 
+public extension String {
+    func trim() -> String
+	{
+		let whitespacechars = " \n\r\t"
+		let whitespacecharset = CharacterSet(charactersIn: whitespacechars)
+        return self.trimmingCharacters(in: whitespacecharset)
+    }
+
+	var asLines: [String]
+	{
+		var lines = [String]()
+		self.enumerateLines {
+			line, stop in
+			lines.append(line)
+		}
+		return lines
+	}
+}
+
 public extension NSTextView {
 	func scrollToStart()
 	{

@@ -30,12 +30,14 @@ class InstallToISOWindow : NSWindowController {
 	@IBOutlet weak var m_scrollview: NSScrollView!
 	@IBOutlet weak var m_output: NSComboBox!
 	@IBOutlet weak var m_output_choose: NSButton!
+	@IBOutlet weak var m_show_in_finder: NSButton!
 
 	var m_text: NSTextView! { return m_scrollview?.textView }
 
 	var m_proc: Process!
 	var m_installer_path = ""
 	var m_tmpdir = ""
+	var m_output_file = ""
 
 	var isEmpty: Bool {
 		return m_proc == nil &&
@@ -86,6 +88,14 @@ class InstallToISOWindow : NSWindowController {
 		m_verbose.isEnabled = enabled
 		m_output.isEnabled = enabled
 		m_output_choose.isEnabled = enabled
+
+		m_show_in_finder.isHidden = m_output_file.isEmpty
+	}
+
+	@IBAction func showInFinder(_ sender: Any)
+	{
+		if m_output_file.isEmpty { return }
+		NSWorkspace.shared.selectFile(m_output_file, inFileViewerRootedAtPath: m_output.stringValue)
 	}
 
 	@IBAction func outputChoose(_ sender: Any)
@@ -176,11 +186,11 @@ class InstallToISOWindow : NSWindowController {
 
 		m_proc = nil
 		m_installer_path = path
+		m_output_file = ""
 		m_drop_target.image = Bundle.icon(path)
 
 		// add to recent documents menu
 		NSDocumentController.shared.noteNewRecentDocumentURL(url)
-		//installerToISO()
 		enableControls()
 	}
 
@@ -222,6 +232,7 @@ class InstallToISOWindow : NSWindowController {
 
 	func installerToISO()
 	{
+		m_output_file = ""
 		addText("", append: false)
 
 		var env = ProcessInfo.processInfo.environment
@@ -263,9 +274,25 @@ class InstallToISOWindow : NSWindowController {
 				[weak self] in
 				if let this = self {
 					this.m_proc = nil
+					this.setOutputFileName()
 					this.enableControls()
 					NSApp.activate(ignoringOtherApps: true)
 					this.removeTmpDirectory()
+				}
+			}
+		}
+	}
+
+	func setOutputFileName()
+	{
+		let lines = m_text.string.asLines
+		for line in lines.reversed() { // name is at end of text - reverse traversal is faster
+			let t = line.trim()
+			if t.contains("-->") {
+				let a = t.split(separator: " ")
+				if let name = a.last {
+					m_output_file = String(name)
+					return
 				}
 			}
 		}
