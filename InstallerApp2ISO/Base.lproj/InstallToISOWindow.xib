@@ -47,33 +47,6 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
-                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" id="yTK-xD-dgd">
-                        <rect key="frame" x="-1" y="-1" width="593" height="106"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <clipView key="contentView" copiesOnScroll="NO" id="gAK-t0-5Fa">
-                            <rect key="frame" x="1" y="1" width="591" height="104"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                            <subviews>
-                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" smartInsertDelete="YES" id="4CV-Ax-v6T">
-                                    <rect key="frame" x="0.0" y="0.0" width="591" height="104"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="591" height="104"/>
-                                    <size key="maxSize" width="598" height="10000000"/>
-                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                </textView>
-                            </subviews>
-                        </clipView>
-                        <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="J9B-mY-eF8">
-                            <rect key="frame" x="1" y="89" width="591" height="16"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="mPL-uN-Sn0">
-                            <rect key="frame" x="576" y="1" width="16" height="104"/>
-                            <autoresizingMask key="autoresizingMask"/>
-                        </scroller>
-                    </scrollView>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="YF7-Yg-CgC">
                         <rect key="frame" x="239" y="219" width="334" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -182,6 +155,14 @@ Gw
                             <action selector="outputChoose:" target="-2" id="J46-2B-haH"/>
                         </connections>
                     </button>
+                    <button verticalHuggingPriority="750" id="fkl-j3-3JN">
+                        <rect key="frame" x="398" y="153" width="128" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                        </buttonCell>
+                    </button>
                     <button verticalHuggingPriority="750" id="4SC-Pw-3dQ">
                         <rect key="frame" x="394" y="110" width="136" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -193,14 +174,33 @@ Gw
                             <action selector="showInFinder:" target="-2" id="BFV-h0-wUU"/>
                         </connections>
                     </button>
-                    <button verticalHuggingPriority="750" id="fkl-j3-3JN">
-                        <rect key="frame" x="398" y="153" width="128" height="18"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
-                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                            <font key="font" metaFont="system"/>
-                        </buttonCell>
-                    </button>
+                    <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" id="yTK-xD-dgd">
+                        <rect key="frame" x="-1" y="-1" width="593" height="106"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" copiesOnScroll="NO" id="gAK-t0-5Fa">
+                            <rect key="frame" x="1" y="1" width="591" height="104"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" findStyle="panel" incrementalSearchingEnabled="YES" id="4CV-Ax-v6T">
+                                    <rect key="frame" x="0.0" y="0.0" width="591" height="104"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <size key="minSize" width="591" height="104"/>
+                                    <size key="maxSize" width="598" height="10000000"/>
+                                    <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                </textView>
+                            </subviews>
+                        </clipView>
+                        <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="J9B-mY-eF8">
+                            <rect key="frame" x="1" y="89" width="591" height="16"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="mPL-uN-Sn0">
+                            <rect key="frame" x="576" y="1" width="16" height="104"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
                 </subviews>
             </view>
             <connections>

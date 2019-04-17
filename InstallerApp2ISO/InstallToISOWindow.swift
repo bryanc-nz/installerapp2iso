@@ -255,7 +255,8 @@ class InstallToISOWindow : NSWindowController {
 		if m_dry_run.integerValue != 0 {
 			cmd += " -d"									// MY_DRYRUN
 		}
-		Swift.print(cmd)
+
+		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
 		let args = ["-c", cmd]
 
 		m_proc = Execute.readPipe("/bin/bash", args: args, env: env) {
