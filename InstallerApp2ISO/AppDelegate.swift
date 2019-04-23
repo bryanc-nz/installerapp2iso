@@ -77,13 +77,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 	@IBAction func export(_ sender: Any)
 	{
-		guard let script = Bundle.main.path(forResource: "InstallerApp2ISO", ofType: "sh") else { return }
+		guard let scriptURL = Bundle.main.url(forResource: "InstallerApp2ISO", withExtension: "sh") else { return }
+
 		let dialog = NSSavePanel()
 		dialog.nameFieldStringValue = "InstallerApp2ISO.sh"
 
 		if (dialog.runModal() == NSApplication.ModalResponse.OK),
 		   let url = dialog.url {
-			let scriptURL = URL(fileURLWithPath: script)
 			try? FileManager.default.copyItem(at: scriptURL, to: url)
 		}
 	}
