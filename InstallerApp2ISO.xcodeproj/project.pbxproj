@@ -74,6 +74,8 @@
 		936C576E2261F93E00477B05 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		936C57732261F99700477B05 /* privileged.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = privileged.c; sourceTree = "<group>"; };
 		936C57742261F99700477B05 /* privileged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privileged.h; sourceTree = "<group>"; };
+		93AB51D6226FB55900B0B13A /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		93AB51D7226FB57100B0B13A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		93FED9EB22613774006A7902 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		93FED9ED226138AD006A7902 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		93FED9EF226151A4006A7902 /* Execute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Execute.swift; sourceTree = "<group>"; };
@@ -100,6 +102,8 @@
 		935140D822612CAC005629C2 = {
 			isa = PBXGroup;
 			children = (
+				93AB51D6226FB55900B0B13A /* LICENSE.txt */,
+				93AB51D7226FB57100B0B13A /* README.md */,
 				934A8F4B226309A8007B3201 /* Makefile */,
 				934A8F4C22630AB8007B3201 /* scripts */,
 				935140E322612CAC005629C2 /* InstallerApp2ISO */,
