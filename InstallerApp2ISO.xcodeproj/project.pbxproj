@@ -55,6 +55,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9313853E22719F90004DDD2A /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		931B95562263D16A00D4BFE8 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ExportOptions.plist; sourceTree = "<group>"; };
 		934A8F4B226309A8007B3201 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		934A8F4C22630AB8007B3201 /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = scripts; sourceTree = "<group>"; };
@@ -105,6 +106,7 @@
 				93AB51D6226FB55900B0B13A /* LICENSE.txt */,
 				93AB51D7226FB57100B0B13A /* README.md */,
 				934A8F4B226309A8007B3201 /* Makefile */,
+				9313853E22719F90004DDD2A /* images */,
 				934A8F4C22630AB8007B3201 /* scripts */,
 				935140E322612CAC005629C2 /* InstallerApp2ISO */,
 				936C576D2261F93E00477B05 /* privileged */,
