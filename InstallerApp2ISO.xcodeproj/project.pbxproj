@@ -69,7 +69,6 @@
 		935140FA22613041005629C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/InstallToISOWindow.xib; sourceTree = "<group>"; };
 		935C71792263CA6100D1BE23 /* InstallerApp2ISO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InstallerApp2ISO.entitlements; sourceTree = "<group>"; };
 		935C717B2263CBA500D1BE23 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InstallToISOWindow.strings; sourceTree = "<group>"; };
-		935C717D2263CBFB00D1BE23 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/MainMenu.strings; sourceTree = "<group>"; };
 		935C71802263CDD600D1BE23 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		936C576C2261F93E00477B05 /* privileged */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = privileged; sourceTree = BUILT_PRODUCTS_DIR; };
 		936C576E2261F93E00477B05 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
@@ -335,7 +334,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				935140E922612CAD005629C2 /* Base */,
-				935C717D2263CBFB00D1BE23 /* en */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";

@@ -11,5 +11,8 @@
 "Command: " = "Command: ";
 
 /* No comment provided by engineer. */
+"stdout is not a pipe!!" = "stdout is not a pipe!!";
+
+/* No comment provided by engineer. */
 "wants to make changes." = "wants to make changes.";
 
