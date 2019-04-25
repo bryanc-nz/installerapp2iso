@@ -66,13 +66,18 @@ class Execute {
 		let wPipe = Pipe()
 		proc.standardInput = wPipe
 
-		let url = URL(fileURLWithPath: prog)
-		proc.executableURL = url
-		do {
-			try proc.run()
-		} catch {
-			failed = true
-			reader("Exception caught running " + prog + ": " + error.localizedDescription)
+		if #available(OSX 10.13, *) {
+			let url = URL(fileURLWithPath: prog)
+			proc.executableURL = url
+			do {
+				try proc.run()
+			} catch {
+				failed = true
+				reader("Exception caught running " + prog + ": " + error.localizedDescription)
+			}
+		} else {
+			proc.launchPath = prog
+			proc.launch()
 		}
 
 		if failed { return nil }

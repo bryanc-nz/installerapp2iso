@@ -43,12 +43,15 @@ class DropView: NSImageView {
         super.init(coder: coder)
 
         self.wantsLayer = true
-        self.layer?.backgroundColor = NSColor.systemGray.cgColor
+        self.layer?.backgroundColor = background(false)
 
-        registerForDraggedTypes([
-								 NSPasteboard.PasteboardType.URL,
-        						 NSPasteboard.PasteboardType.fileURL
-								])
+		if #available(OSX 10.13, *) {
+        	registerForDraggedTypes([NSPasteboard.PasteboardType.URL,
+        							 NSPasteboard.PasteboardType.fileURL])
+        } else {
+        	registerForDraggedTypes([NSPasteboard.PasteboardType(kUTTypeURL as String),
+        							 NSPasteboard.PasteboardType(kUTTypeFileURL as String)])
+		}
     }
 
     override func draw(_ dirtyRect: NSRect)
@@ -60,7 +63,7 @@ class DropView: NSImageView {
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation
     {
         if checkFileType(sender) == true {
-            self.layer?.backgroundColor = NSColor.systemBlue.cgColor
+            self.layer?.backgroundColor = background(true)
             return .copy
         } else {
             return NSDragOperation()
@@ -75,14 +78,34 @@ class DropView: NSImageView {
 		return checker(path)
     }
 
+    fileprivate func background(_ hilite: Bool) -> CGColor
+    {
+    	var cgColor: CGColor!
+
+    	if hilite {
+    		if #available(OSX 10.10, *) {
+    			cgColor = NSColor.systemBlue.cgColor
+			} else {
+    			cgColor = NSColor.blue.cgColor
+			}
+    	} else {
+    		if #available(OSX 10.10, *) {
+    			cgColor = NSColor.systemGray.cgColor
+    		} else {
+    			cgColor = NSColor.gray.cgColor
+			}
+    	}
+    	return cgColor
+    }
+
     override func draggingExited(_ sender: NSDraggingInfo?)
     {
-        self.layer?.backgroundColor = NSColor.systemGray.cgColor
+        self.layer?.backgroundColor = background(false)
     }
 
     override func draggingEnded(_ sender: NSDraggingInfo)
     {
-        self.layer?.backgroundColor = NSColor.systemGray.cgColor
+        self.layer?.backgroundColor = background(false)
     }
 
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool
