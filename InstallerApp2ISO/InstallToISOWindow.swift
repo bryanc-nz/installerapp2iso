@@ -374,7 +374,8 @@ class InstallToISOWindow : NSWindowController {
 
 	func addText(_ text: String, append: Bool = true)
 	{
-		if text.count == 0 { return }
+		if text.count == 0 && append { return }
+		
 		main_async {
 			[weak self] in
 			if let this = self {
