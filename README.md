@@ -14,7 +14,7 @@ If you have problems with InstallerApp2ISO then please email bryan@whatroute.net
 Unfortunately, many users are daunted by the macOS Terminal command line. A GUI gives them more confidence in what they are doing.
 
 #### Can I run the shell script without this application?
-Indeed you can. You can export (**File/Export**) the embedded bash script, InstallerAppToISO.sh, to any folder (for which you have access) on your Mac and execute it from the Terminal command line.
+Indeed you can. You can export (**File/Export Script**) the embedded bash script, InstallerAppToISO.sh, to any folder (for which you have access) on your Mac and execute it from the Terminal command line.
 
 ### Building InstallerApp2ISO
 #### Prerequisites
@@ -36,6 +36,15 @@ This screenshot shows a successful run of InstallerApp2ISO.
 ![](images/installerapp2iso.png)
 
 ### Advanced Usage
-You can use **File/Export** to export the embedded shell script engine (InstallerApp2ISO.sh) to another folder on your machine and then run it from the Terminal command line.
+#### Run from the command line
+You can use **File/Export Script** to export the embedded shell script engine (InstallerApp2ISO.sh) to another folder on your machine and then run it from the Terminal command line.
 
-List the shell script to view the usage and allowable options.
+List the shell script (in your favourite text editor or using commands such as *cat* or *less* - but take care not to modify it) to view the usage and allowable options.
+
+### Logging
+InstallerApp2ISO.sh produces extensive logging of its activities. Using the **Log Detail** button you are able to control the verbosity of this logging. Set the detail you want *before* creating the ISO file.
+
+You can save the output logging to a text file with the menu commands:
+ 
+* Save Log...
+* Save Log As...

@@ -52,6 +52,7 @@ class InstallToISOWindow : NSWindowController {
 	var m_installer_path = ""
 	var m_tmpdir = ""
 	var m_output_file = ""
+	var m_log_file: URL!
 
 	var isEmpty: Bool {
 		return m_proc == nil &&
@@ -104,6 +105,37 @@ class InstallToISOWindow : NSWindowController {
 		m_output_choose.isEnabled = enabled
 
 		m_show_in_finder.isHidden = m_output_file.isEmpty
+	}
+
+	func saveLog()
+	{
+		guard let url = m_log_file else { return }
+		let text = m_text.string
+		try? text.write(to: url, atomically: true, encoding: .utf8)
+	}
+
+	@IBAction func saveDocumentAs(_ sender: Any)
+	{
+		guard let win = window else { return }
+		m_log_file = nil
+
+		let dialog = NSSavePanel()
+		dialog.nameFieldStringValue = win.title + ".log"
+
+		if (dialog.runModal() == NSApplication.ModalResponse.OK),
+		   let url = dialog.url {
+			m_log_file = url
+			saveLog()
+		}
+	}
+
+	@IBAction func saveDocument(_ sender: Any)
+	{
+		if m_log_file == nil {
+			saveDocumentAs(sender)
+			return
+		}
+		saveLog()
 	}
 
 	@IBAction func showInFinder(_ sender: Any)
@@ -190,6 +222,7 @@ class InstallToISOWindow : NSWindowController {
 	{
 		if title.isEmpty { return }
 		window?.title = title
+		m_log_file = nil
 	}
 
 	func setPath(_ path: String)
