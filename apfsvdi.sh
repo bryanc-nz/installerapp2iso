@@ -1,4 +1,4 @@
-#!/bin/bash//
+#!/bin/bash
 
 ##
 ##  apfsvdi.sh
@@ -47,16 +47,88 @@
 # There are no 3rd party binaries installed in the EFI tree or into the macOS filesystem
 #
 
-## FIX ME - PREFIX and DIR should be derived from arguments
-##
-PREFIX=10.14.2
-DIR=/Users/bryan/Desktop
+# ---------------------------------------------------------------
+# Set some script strict checking
+# ---------------------------------------------------------------
+set -o errexit;
+set -u
+set -o pipefail
 
-ISO=$DIR/$PREFIX.iso
+my_usage()
+{
+    echo ""
+    echo "Usage:"
+    echo ""
+    echo "   apfsvdi.sh  -i|--iso <macOS Installer ISO>"
+    echo "               -s|--size <VDI disk size in GB - default 64>"
+	exit $1
+}
+
+#
+# Initialise variables
+#
+ISO=""
+SIZE=64
+
+
+# ---------------------------------------------------------------
+# Parse the arguments.
+# ---------------------------------------------------------------
+if [ $# -eq "0" ]; then
+    echo "*** ERROR: No arguments specified. The --iso option is mandatory."
+    my_usage 1
+fi
+
+while test $# -ge 1;
+do
+    ARG=$1;
+    shift;
+    case "$ARG" in
+        -i|--iso)
+            if test $# -eq 0; then
+                echo "*** ERROR: missing --installer argument.";
+                echo "";
+                exit 1;
+            fi
+            ISO="$1";
+            if [ ! -f "$ISO" ]; then
+            	echo "$ISO" cannot be found.
+            	exit 1
+            fi
+            shift;
+            ;;
+
+		-s|--size)
+            if test $# -eq 0; then
+                echo "*** ERROR: missing --size argument.";
+                echo "";
+                exit 1;
+            fi
+            SIZE="$1";
+            if test "$SIZE" -lt 10; then
+            	echo "$SIZE GB is too small to install macOS."
+            	myusage 1
+            fi
+            if test "$SIZE" -gt 100000; then
+            	echo "$SIZE GB is too large to install."
+            	myusage 1
+            fi
+            shift;
+            ;;
+
+        *)
+            echo "*** ERROR: Invalid syntax."
+            my_usage 1;
+            ;;
+    esac
+done
+
+PREFIX="$(basename -s .iso $ISO)"
+DIR="$(dirname $ISO)"
+
 VDI=$DIR/$PREFIX.vdi
 SPARSE=$DIR/$PREFIX.sparsebundle
 PLIST=$DIR/$PREFIX.plist
-SIZE=64
 
 #
 # Mount the ISO and find its mounted volume name
@@ -130,6 +202,8 @@ echo "Failed."
 EOT
 
 ## convert the sparseimage disk to a VirtualBox .vdi file
+echo "Creating the VDI file: $VDI"
+echo "This going to take a while"
 rm -f "$VDI"
 VBoxManage convertfromraw "$DEVICE" "$VDI" --format VDI
 
