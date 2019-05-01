@@ -64,6 +64,17 @@ my_usage()
 	exit $1
 }
 
+errorcheck()
+{
+	error=$1
+	msg=$2
+
+	if [ $error -ne 0 ]; then
+		echo $msg
+		exit 1
+	fi
+}
+
 #
 # Initialise variables
 #
@@ -84,42 +95,42 @@ do
     ARG=$1;
     shift;
     case "$ARG" in
-        -i|--iso)
-            if test $# -eq 0; then
-                echo "*** ERROR: missing --installer argument.";
-                echo "";
-                exit 1;
-            fi
-            ISO="$1";
-            if [ ! -f "$ISO" ]; then
-            	echo "$ISO" cannot be found.
-            	exit 1
-            fi
-            shift;
-            ;;
+	-i|--iso)
+		if test $# -eq 0; then
+			echo "*** ERROR: missing --installer argument.";
+			echo "";
+			exit 1;
+		fi
+		ISO="$1";
+		if [ ! -f "$ISO" ]; then
+			echo "$ISO" cannot be found.
+			exit 1
+		fi
+		shift;
+		;;
 
-		-s|--size)
-            if test $# -eq 0; then
-                echo "*** ERROR: missing --size argument.";
-                echo "";
-                exit 1;
-            fi
-            SIZE="$1";
-            if test "$SIZE" -lt 10; then
-            	echo "$SIZE GB is too small to install macOS."
-            	myusage 1
-            fi
-            if test "$SIZE" -gt 100000; then
-            	echo "$SIZE GB is too large to install."
-            	myusage 1
-            fi
-            shift;
-            ;;
+	-s|--size)
+		if test $# -eq 0; then
+			echo "*** ERROR: missing --size argument.";
+			echo "";
+			exit 1;
+		fi
+		SIZE="$1";
+		if test "$SIZE" -lt 10; then
+			echo "$SIZE GB is too small to install macOS."
+			myusage 1
+		fi
+		if test "$SIZE" -gt 100000; then
+			echo "$SIZE GB is too large to install."
+			myusage 1
+		fi
+		shift;
+		;;
 
-        *)
-            echo "*** ERROR: Invalid syntax."
-            my_usage 1;
-            ;;
+	*)
+		echo "*** ERROR: Invalid syntax."
+		my_usage 1;
+		;;
     esac
 done
 
@@ -128,13 +139,14 @@ DIR="$(dirname $ISO)"
 
 VDI=$DIR/$PREFIX.vdi
 SPARSE=$DIR/$PREFIX.sparsebundle
-PLIST=$DIR/$PREFIX.plist
 
 #
 # Mount the ISO and find its mounted volume name
 #
 INSTALLER="$(hdiutil attach "$ISO" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-echo $INSTALLER
+if [ x"$INSTALLER" == "x" ]; then
+	errorcheck 1 "Cannot attach installer: $ISO"
+fi
 
 #
 # Check the CFBundleVersion
@@ -146,9 +158,7 @@ if [ ! -f "$plist" ]; then
 	exit 1
 fi
 version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
-
-echo "version: $version"
-if [ version -lt 14000 ]; then
+if [ $version -lt 14000 ]; then
 	echo "Cannot create APFS file system with $INSTALLER"
 	exit 1
 fi
@@ -156,14 +166,17 @@ fi
 #
 # Locate the Base System image within the installer
 #
-BASESYSTEM="$(find "$INSTALLER" -name BaseSystem.dmg)"
+BASESYSTEM="$(find "$INSTALLER" -name BaseSystem.dmg 2> /dev/null)"
 echo $BASESYSTEM
 
 #
 # Mount the base system and find the path to the APFS boot driver
 #
 BASEMOUNT="$(hdiutil attach "$BASESYSTEM" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-echo $BASEMOUNT
+if [ x"BASEMOUNT" == "x" ]; then
+	errorcheck 1 "Cannot attach Base System Image: $BASESYSTEM"
+fi
+
 APFS_EFI="$BASEMOUNT"/usr/standalone/i386/apfs.efi
 
 #
@@ -171,32 +184,49 @@ APFS_EFI="$BASEMOUNT"/usr/standalone/i386/apfs.efi
 #
 rm -rf $SPARSE
 hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -size $SIZE"g" $SPARSE
-hdiutil attach $SPARSE -nomount -plist > "$PLIST"
+errorcheck $? "Cannot create sparse bundle:  $SPARSE"
 
-EFI_DEV=$(/usr/libexec/PlistBuddy -c "print :system-entities:0:dev-entry" "$PLIST")
-DEVICE=$(/usr/libexec/PlistBuddy -c "print :system-entities:1:dev-entry" "$PLIST")
+VOLUMES=$DIR/$PREFIX.txt
+hdiutil attach $SPARSE -nomount > "$VOLUMES"
+errorcheck $? "Cannot attach $SPARSE"
 
-## we're finished with the .plist file
-rm -f "$PLIST"
+DEVICE=$(cat "$VOLUMES"|awk '/GUID_partition_scheme / { print $1 }')
+EFI_DEV=$(cat "$VOLUMES"|awk '/EFI/ { print $1 }')
+
+if [ x"DEVICE" == "x" ]; then
+	errorcheck 1 "$SPARSE is not a GUID disk."
+fi
+
+if [ x"$EFI_DEV" == "x" ]; then
+	errorcheck 1 "There is no EFI partition in $SPARSE."
+fi
+
+## we're finished with the volume/device mapping file
+rm -f "$VOLUMES"
 
 #
 # Add the required entries to the EFI file system
 #
-echo $EFI_DEV
 diskutil mount $EFI_DEV
+errorcheck $? "Cannot mount EFI device: $EFI_DEV"
 
 #
 # copy the apfs.efi driver into the EFI file system
 #
+if [ ! -e "/Volumes/EFI" ]; then
+	errorcheck 1 "/Volumes/EFI is not mounted."
+fi
+
 mkdir -p /Volumes/EFI/EFI/drivers
 cp "$APFS_EFI" /Volumes/EFI/EFI/drivers/
+errorcheck $? "Cannot copy APFS driver: $APFS_EFI"
 
 # we're finished with the ISO and can unmount the file systems
-hdiutil detach "$BASEMOUNT"
-hdiutil detach "$INSTALLER"
+hdiutil detach "$BASEMOUNT" -quiet
+hdiutil detach "$INSTALLER" -quiet
 
 #
-# create startup and install the script to boot either macOS or the macOS installer
+# create startup.nsh and install the script to boot either macOS or the macOS installer
 #
 cat <<EOT > /Volumes/EFI/startup.nsh
 @echo -off
@@ -220,7 +250,7 @@ EOT
 
 ## convert the sparseimage disk to a VirtualBox .vdi file
 echo "Creating the VDI file: $VDI"
-echo "This going to take a while"
+echo "This is going to take a while ..."
 rm -f "$VDI"
 VBoxManage convertfromraw "$DEVICE" "$VDI" --format VDI
 
@@ -228,6 +258,6 @@ VBoxManage convertfromraw "$DEVICE" "$VDI" --format VDI
 # cleanup
 #
 diskutil unmount $EFI_DEV
-diskutil eject $DEVICE
+hdiutil detach $DEVICE
 rm -rf $SPARSE
 
