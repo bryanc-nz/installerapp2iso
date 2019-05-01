@@ -50,9 +50,9 @@
 # ---------------------------------------------------------------
 # Set some script strict checking
 # ---------------------------------------------------------------
-set -o errexit;
-set -u
-set -o pipefail
+#set -o errexit;
+#set -u
+#set -o pipefail
 
 my_usage()
 {
@@ -135,6 +135,23 @@ PLIST=$DIR/$PREFIX.plist
 #
 INSTALLER="$(hdiutil attach "$ISO" | awk -F '\t' '/Apple_HFS/ {print $3}')"
 echo $INSTALLER
+
+#
+# Check the CFBundleVersion
+#
+app=$(ls -d "$INSTALLER"/*.app)
+plist="$app/Contents/Info.plist"
+if [ ! -f "$plist" ]; then
+	echo "$INSTALLER does not contain an Info.plist file"
+	exit 1
+fi
+version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
+
+echo "version: $version"
+if [ version -lt 14000 ]; then
+	echo "Cannot create APFS file system with $INSTALLER"
+	exit 1
+fi
 
 #
 # Locate the Base System image within the installer
