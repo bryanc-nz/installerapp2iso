@@ -243,14 +243,18 @@ make_vdi()
 				progress=$2
 				totalsize=$3
 
+				rate = 0
+				if (elapsed > 0) {
+					rate = progress / elapsed / 1024.0 / 1024.0
+				}
 				completed = progress / totalsize
 				remaining = 0
 				if (completed != 0) {
 					total = elapsed / completed
 					remaining = total - elapsed
 				}
-				printf("Completed: %.1f%%, Elapsed(sec): %.1f, Remaining(sec): %.1f",
-						completed * 100.0, elapsed, remaining)
+				printf("Completed: %.1f%%, Elapsed(sec): %.1f, Remaining(sec): %.1f, Rate(MB/s): %.3f",
+						completed * 100.0, elapsed, remaining, rate)
 
 			}')
 
