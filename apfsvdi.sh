@@ -69,6 +69,7 @@ EFI_DEV=""
 INSTALLER=""
 SPARSE=""
 TMPIMG=""
+TMPVDI=""
 
 my_usage()
 {
@@ -206,8 +207,10 @@ make_vdi()
 	echo "This is going to take a while ..."
 
 	rm -f "$vdi"
+	TMPVDI="$vdi".tmp
+
 	if [ $SHOWPROGRESS -eq 0 ]; then
-		VBoxManage convertfromraw "$rawdevice" "$vdi" --format VDI
+		VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
 	else
 		local imgfile="$TMPDIR"/"$PREFIX".tmp
 		touch "$imgfile"
@@ -221,7 +224,7 @@ make_vdi()
 		local start_time="$(date -u +%s)"
 		{
 			dd if="$rawdevice" bs=65536 2> /dev/null | tee "$imgfile" | \
-			VBoxManage convertfromraw stdin "$vdi" $imgsize --format VDI
+			VBoxManage convertfromraw stdin "$TMPVDI" $imgsize --format VDI
 		}&
 		pid=$!
 
@@ -278,6 +281,9 @@ make_vdi()
 			echo "Created $vdisize MB VDI file: $vdi"
 		fi
 	fi
+
+	mv "$TMPVDI" "$vdi"
+	TMPVDI=""
 }
 
 get_options()
@@ -443,6 +449,12 @@ cleanup()
 		rm -rf "$TMPIMG"
 		showprogress "Deleted temporary image file: $TMPIMG"
 		TMPIMG=""
+	fi
+
+	if [ x"$TMPVDI" != "x" ]; then
+		rm -rf "$TMPVDI"
+		showprogress "Deleted temporary VDI file: $TMPVDI"
+		TMPVDI=""
 	fi
 
 	if [ $SHOWPROGRESS -ne 0 ]; then
