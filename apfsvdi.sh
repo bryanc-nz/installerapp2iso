@@ -63,6 +63,9 @@ PREFIX=""
 SIZE=64
 TMPDIR=""
 SHOWPROGRESS=1
+BASEMOUNT=""
+DEVICE=""
+EFI_DEV=""
 
 my_usage()
 {
@@ -125,6 +128,12 @@ make_sparse()
 
 	## we're finished with the volume/device mapping file
 	rm -f "$volumes"
+
+	showprogress ""
+	showprogress "New File System Devices"
+	showprogress "          Whole disk: $DEVICE"
+	showprogress "EFI partition device: $EFI_DEV"
+	showprogress ""
 }
 
 make_efi()
@@ -132,10 +141,15 @@ make_efi()
 	local efi_dev="$1"
 	local driver="$2"
 
+	local quiet="quiet"
+	if [ $SHOWPROGRESS -ne 0 ]; then
+		quiet=""
+	fi
+
 	#
 	# Add the required entries to the EFI file system
 	#
-	diskutil mount $efi_dev
+	diskutil $quiet mount $efi_dev
 	errorcheck $? "Cannot mount EFI device: $efi_dev"
 
 	#
@@ -176,7 +190,7 @@ endfor
 echo "Failed."
 EOT
 
-	diskutil unmount $efi_dev
+	diskutil $quiet unmount $efi_dev
 }
 
 make_vdi()
@@ -216,17 +230,29 @@ make_vdi()
 			local elapsed="$(($now-$start_time))"
 
 			local progress=$(du -k "$imgfile" | awk '{print $1 * 1024}')
-			local pct=$(( $progress * 100 / $imgsize ))
 
-			local remain="Unknown"
-			if [ $pct -ne 0 ]; then
-				total=$(( $elapsed * 100 / $pct ))
-				remain=$(( $total - $elapsed ))
-			fi
+			#
+			# Use awk to generate a progress message
+			#
+			local notification=$(echo "$elapsed $progress $imgsize" | awk '{
+				elapsed=$1
+				progress=$2
+				totalsize=$3
+
+				completed = progress / totalsize
+				remaining = 0
+				if (completed != 0) {
+					total = elapsed / completed
+					remaining = total - elapsed
+				}
+				printf("Completed: %.1f%%, Elapsed(sec): %.1f, Remaining(sec): %.1f",
+						completed * 100.0, elapsed, remaining)
+
+			}')
 
 			tput rc
 			tput el
-			printf "Pct. complete: $pct%% Elapsed(sec): $elapsed Est. Remaining(sec): $remain"
+			/bin/echo -n "$notification"
 			sleep 1
 		done
 		tput cnorm
@@ -239,7 +265,7 @@ make_vdi()
 	if [ $SHOWPROGRESS -ne 0 ]; then
 		if [ -f "$vdi" ]; then
 			echo ""
-			local vdisize=$(du -k "$vdi" | awk '{print $1 / 1024}')
+			local vdisize=$(du -k "$vdi" | awk '{printf("%.3f", $1 / 1024)}')
 			echo "Created $vdisize MB VDI file: $vdi"
 		fi
 	fi
@@ -369,6 +395,15 @@ mount_base_system()
 	showprogress "$base_system mounted at $BASEMOUNT"
 }
 
+cleanup()
+{
+	#
+	# cleanup
+	#
+	hdiutil detach $DEVICE
+	rm -rf $SPARSE
+}
+
 get_options $@
 
 VDI=$DIR/$PREFIX.vdi
@@ -394,9 +429,5 @@ hdiutil detach "$INSTALLER" -quiet
 ## convert the sparseimage disk to a VirtualBox .vdi file
 make_vdi "$DEVICE" "$VDI"
 
-#
-# cleanup
-#
-hdiutil detach $DEVICE
-rm -rf $SPARSE
+cleanup
 exit 0
