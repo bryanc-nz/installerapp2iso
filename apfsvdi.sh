@@ -51,184 +51,112 @@
 # Set some script strict checking
 # ---------------------------------------------------------------
 #set -o errexit;
-#set -u
+set -u
 #set -o pipefail
+
+#
+# Initialise global variables
+#
+ISO=""
+DIR=""
+PREFIX=""
+SIZE=64
+TMPDIR=""
+SHOWPROGRESS=1
 
 my_usage()
 {
     echo ""
     echo "Usage:"
     echo ""
-    echo "   apfsvdi.sh  -i|--iso <macOS Installer ISO>"
-    echo "               -s|--size <VDI disk size in GB - default 64>"
+    echo "apfsvdi.sh  -i|--iso <macOS Installer ISO>"
+    echo "            [-q|--quiet]"
+    echo "            [-s|--size <VDI disk size in GB - default 64>]"
+    echo "            [-t|--tmpdir <Directory for temporary files>]"
 	exit $1
 }
 
 errorcheck()
 {
-	error=$1
-	msg=$2
+	local error=$1
+	local msg=$2
 
 	if [ $error -ne 0 ]; then
-		echo $msg
+		echo "Error: $msg"
 		exit 1
 	fi
 }
 
-#
-# Initialise variables
-#
-ISO=""
-SIZE=64
+showprogress()
+{
+	if [ $SHOWPROGRESS -ne 0 ]; then
+		echo "$@"
+	fi
+}
 
+make_sparse()
+{
+	local sparse="$1"
+	local volumes=$TMPDIR/$PREFIX.txt
 
-# ---------------------------------------------------------------
-# Parse the arguments.
-# ---------------------------------------------------------------
-if [ $# -eq "0" ]; then
-    echo "*** ERROR: No arguments specified. The --iso option is mandatory."
-    my_usage 1
-fi
+	#
+	# Create a sparse bundle - it will be converted to the VDI file
+	#
+	rm -rf $sparse
+	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -size $SIZE"g" $sparse
+	errorcheck $? "Cannot create sparse bundle:  $sparse"
 
-while test $# -ge 1;
-do
-    ARG=$1;
-    shift;
-    case "$ARG" in
-	-i|--iso)
-		if test $# -eq 0; then
-			echo "*** ERROR: missing --installer argument.";
-			echo "";
-			exit 1;
-		fi
-		ISO="$1";
-		if [ ! -f "$ISO" ]; then
-			echo "$ISO" cannot be found.
-			exit 1
-		fi
-		shift;
-		;;
+	#
+	# attach the sparse bundle and get the device ids for the file systems
+	#
+	hdiutil attach $sparse -nomount > "$volumes"
+	errorcheck $? "Cannot attach $sparse"
 
-	-s|--size)
-		if test $# -eq 0; then
-			echo "*** ERROR: missing --size argument.";
-			echo "";
-			exit 1;
-		fi
-		SIZE="$1";
-		if test "$SIZE" -lt 10; then
-			echo "$SIZE GB is too small to install macOS."
-			myusage 1
-		fi
-		if test "$SIZE" -gt 100000; then
-			echo "$SIZE GB is too large to install."
-			myusage 1
-		fi
-		shift;
-		;;
+	DEVICE=$(cat "$volumes"|awk '/GUID_partition_scheme / { print $1 }')
+	EFI_DEV=$(cat "$volumes"|awk '/EFI/ { print $1 }')
 
-	*)
-		echo "*** ERROR: Invalid syntax."
-		my_usage 1;
-		;;
-    esac
-done
+	if [ x"DEVICE" == "x" ]; then
+		errorcheck 1 "$sparse is not a GUID disk."
+	fi
 
-PREFIX="$(basename -s .iso $ISO)"
-DIR="$(dirname $ISO)"
+	if [ x"$EFI_DEV" == "x" ]; then
+		errorcheck 1 "There is no EFI partition in $sparse."
+	fi
 
-VDI=$DIR/$PREFIX.vdi
-SPARSE=$DIR/$PREFIX.sparsebundle
+	## we're finished with the volume/device mapping file
+	rm -f "$volumes"
+}
 
-#
-# Mount the ISO and find its mounted volume name
-#
-INSTALLER="$(hdiutil attach "$ISO" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-if [ x"$INSTALLER" == "x" ]; then
-	errorcheck 1 "Cannot attach installer: $ISO"
-fi
+make_efi()
+{
+	local efi_dev="$1"
+	local driver="$2"
 
-#
-# Check the CFBundleVersion
-#
-app=$(ls -d "$INSTALLER"/*.app)
-plist="$app/Contents/Info.plist"
-if [ ! -f "$plist" ]; then
-	echo "$INSTALLER does not contain an Info.plist file"
-	exit 1
-fi
-version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
-if [ $version -lt 14000 ]; then
-	echo "Cannot create APFS file system with $INSTALLER"
-	exit 1
-fi
+	#
+	# Add the required entries to the EFI file system
+	#
+	diskutil mount $efi_dev
+	errorcheck $? "Cannot mount EFI device: $efi_dev"
 
-#
-# Locate the Base System image within the installer
-#
-BASESYSTEM="$(find "$INSTALLER" -name BaseSystem.dmg 2> /dev/null)"
-echo $BASESYSTEM
+	#
+	# copy the apfs.efi driver into the EFI file system
+	#
+	if [ ! -e "/Volumes/EFI" ]; then
+		errorcheck 1 "/Volumes/EFI is not mounted."
+	fi
 
-#
-# Mount the base system and find the path to the APFS boot driver
-#
-BASEMOUNT="$(hdiutil attach "$BASESYSTEM" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-if [ x"BASEMOUNT" == "x" ]; then
-	errorcheck 1 "Cannot attach Base System Image: $BASESYSTEM"
-fi
+	showprogress "Copy $driver to /Volumes/EFI/EFI/drivers"
 
-APFS_EFI="$BASEMOUNT"/usr/standalone/i386/apfs.efi
+	mkdir -p /Volumes/EFI/EFI/drivers
+	cp "$driver" /Volumes/EFI/EFI/drivers/
+	errorcheck $? "Cannot copy APFS driver: $driver"
 
-#
-# Create and attach a sparse bundle - it will be converted to the VDI file
-#
-rm -rf $SPARSE
-hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -size $SIZE"g" $SPARSE
-errorcheck $? "Cannot create sparse bundle:  $SPARSE"
+	#
+	# create startup.nsh and install the script to boot either macOS or the macOS installer
+	#
+	showprogress "Add script 'startup.nsh' to '/Volumes/EFI/'"
 
-VOLUMES=$DIR/$PREFIX.txt
-hdiutil attach $SPARSE -nomount > "$VOLUMES"
-errorcheck $? "Cannot attach $SPARSE"
-
-DEVICE=$(cat "$VOLUMES"|awk '/GUID_partition_scheme / { print $1 }')
-EFI_DEV=$(cat "$VOLUMES"|awk '/EFI/ { print $1 }')
-
-if [ x"DEVICE" == "x" ]; then
-	errorcheck 1 "$SPARSE is not a GUID disk."
-fi
-
-if [ x"$EFI_DEV" == "x" ]; then
-	errorcheck 1 "There is no EFI partition in $SPARSE."
-fi
-
-## we're finished with the volume/device mapping file
-rm -f "$VOLUMES"
-
-#
-# Add the required entries to the EFI file system
-#
-diskutil mount $EFI_DEV
-errorcheck $? "Cannot mount EFI device: $EFI_DEV"
-
-#
-# copy the apfs.efi driver into the EFI file system
-#
-if [ ! -e "/Volumes/EFI" ]; then
-	errorcheck 1 "/Volumes/EFI is not mounted."
-fi
-
-mkdir -p /Volumes/EFI/EFI/drivers
-cp "$APFS_EFI" /Volumes/EFI/EFI/drivers/
-errorcheck $? "Cannot copy APFS driver: $APFS_EFI"
-
-# we're finished with the ISO and can unmount the file systems
-hdiutil detach "$BASEMOUNT" -quiet
-hdiutil detach "$INSTALLER" -quiet
-
-#
-# create startup.nsh and install the script to boot either macOS or the macOS installer
-#
-cat <<EOT > /Volumes/EFI/startup.nsh
+	cat <<EOT > /Volumes/EFI/startup.nsh
 @echo -off
 #fixme startup delay
 set StartupDelay 0
@@ -238,26 +166,237 @@ map -r
 echo "Trying to find a bootable device..."
 for %p in "macOS Install Data" "macOS Install Data\Locked Files\Boot Files" "OS X Install Data" "Mac OS X Install Data" "System\Library\CoreServices" ".IABootFiles"
   for %d in fs2 fs3 fs4 fs5 fs6 fs1
-    if exist "%d:\%p\boot.efi" then
-      echo "Booting: %d:\%p\boot.efi ..."
-      #fixme: bcfg boot add 0 "%d:\\%p\\boot.efi" "macOS"
-      "%d:\%p\boot.efi"
-    endif
+	if exist "%d:\%p\boot.efi" then
+	  echo "Booting: %d:\%p\boot.efi ..."
+	  #fixme: bcfg boot add 0 "%d:\\%p\\boot.efi" "macOS"
+	  "%d:\%p\boot.efi"
+	endif
   endfor
 endfor
 echo "Failed."
 EOT
 
+	diskutil unmount $efi_dev
+}
+
+make_vdi()
+{
+	local rawdevice="$1"
+	local vdi="$2"
+
+	echo ""
+	echo "Creating the VDI file: $vdi"
+	echo "This is going to take a while ..."
+
+	rm -f "$vdi"
+	if [ $SHOWPROGRESS -eq 0 ]; then
+		VBoxManage convertfromraw "$rawdevice" "$vdi" --format VDI
+	else
+		local imgfile="$TMPDIR"/"$PREFIX".tmp
+		touch $imgfile
+
+		local imgsize=$(diskutil info "$rawdevice"|awk -F '[()]' '/Disk Size/ {print $2}'|awk '{print $1}')
+
+		#
+		# run the conversion in a separate shell
+		#
+		local start_time="$(date -u +%s)"
+		{
+			dd if="$rawdevice" bs=65536 2> /dev/null | tee "$imgfile" | \
+			VBoxManage convertfromraw stdin "$vdi" $imgsize --format VDI
+		}&
+		pid=$!
+
+		sleep 1
+		echo ""
+		tput civis
+		tput sc
+		while ps $pid > /dev/null; do
+			local now="$(date -u +%s)"
+			local elapsed="$(($now-$start_time))"
+
+			local progress=$(du -k "$imgfile" | awk '{print $1 * 1024}')
+			local pct=$(( $progress * 100 / $imgsize ))
+
+			local remain="Unknown"
+			if [ $pct -ne 0 ]; then
+				total=$(( $elapsed * 100 / $pct ))
+				remain=$(( $total - $elapsed ))
+			fi
+
+			tput rc
+			tput el
+			printf "Pct. complete: $pct%% Elapsed(sec): $elapsed Est. Remaining(sec): $remain"
+			sleep 1
+		done
+		tput cnorm
+		echo ""
+
+		wait $pid
+		rm -f "$imgfile"
+	fi
+
+	if [ $SHOWPROGRESS -ne 0 ]; then
+		if [ -f "$vdi" ]; then
+			echo ""
+			local vdisize=$(du -k "$vdi" | awk '{print $1 / 1024}')
+			echo "Created $vdisize MB VDI file: $vdi"
+		fi
+	fi
+}
+
+get_options()
+{
+	# ---------------------------------------------------------------
+	# Parse the arguments.
+	# ---------------------------------------------------------------
+	if [ $# -eq "0" ]; then
+		echo "*** ERROR: No arguments specified. The --iso option is mandatory."
+		my_usage 1
+	fi
+
+	while test $# -ge 1;
+	do
+		ARG=$1;
+		shift;
+		case "$ARG" in
+		-i|--iso)
+			if test $# -eq 0; then
+				echo "*** ERROR: missing --installer argument.";
+				echo "";
+				myusage 1;
+			fi
+			ISO="$1";
+			shift;
+			;;
+
+		-q|--quiet)
+			SHOWPROGRESS=0
+			;;
+
+		-s|--size)
+			if test $# -eq 0; then
+				echo "*** ERROR: missing --size argument.";
+				echo "";
+				myusage 1;
+			fi
+			SIZE="$1";
+			if test "$SIZE" -lt 10; then
+				echo "$SIZE GB is too small to install macOS."
+				myusage 1
+			fi
+			if test "$SIZE" -gt 100000; then
+				echo "$SIZE GB is too large to install."
+				myusage 1
+			fi
+			shift;
+			;;
+
+		-t|--tmpdir)
+			if test $# -eq 0; then
+				echo "*** ERROR: missing --tmpdir argument.";
+				echo "";
+				myusage 1;
+			fi
+			TMPDIR="$1";
+			shift;
+			;;
+
+		*)
+			echo "*** ERROR: Invalid syntax."
+			my_usage 1;
+			;;
+		esac
+	done
+
+	if [ x"$ISO" == "x" ]; then
+		errorcheck 1 "No ISO file specified. The --iso option is mandatory."
+	fi
+
+	if [ ! -f "$ISO" ]; then
+		errorcheck 1 "ISO file not found: $ISO"
+	fi
+
+	PREFIX="$(basename -s .iso $ISO)"
+	DIR="$(dirname $ISO)"
+
+	if [ x"$TMPDIR" == "x" ]; then
+		TMPDIR=$DIR
+	fi
+
+	if [ ! -e "$TMPDIR" ]; then
+		errorcheck 1 "Temporary directory is missing: $TMPDIR"
+	fi
+}
+
+check_valid_installer_bundle()
+{
+	local installer=$1
+	#
+	# Check the CFBundleVersion
+	#
+	local app=$(ls -d "$installer"/*.app)
+	local plist="$app/Contents/Info.plist"
+
+	if [ ! -f "$plist" ]; then
+		errorcheck 1 "$installer does not contain an Info.plist file"
+	fi
+
+	local version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
+	if [ $version -lt 14000 ]; then
+		errorcheck 1 "Cannot create APFS file system with $installer"
+	fi
+}
+
+mount_base_system()
+{
+	local installer="$1"
+	#
+	# Locate the Base System image within the installer
+	#
+	local base_system="$(find "$installer" -name BaseSystem.dmg 2> /dev/null)"
+
+	showprogress "Attempt to mount: $base_system"
+
+	#
+	# Mount the base system and find the path to the APFS boot driver
+	#
+	BASEMOUNT="$(hdiutil attach "$base_system" | awk -F '\t' '/Apple_HFS/ {print $3}')"
+	if [ x"BASEMOUNT" == "x" ]; then
+		errorcheck 1 "Cannot attach Base System Image: $base_system"
+	fi
+
+	showprogress "$base_system mounted at $BASEMOUNT"
+}
+
+get_options $@
+
+VDI=$DIR/$PREFIX.vdi
+SPARSE=$TMPDIR/$PREFIX.sparsebundle
+
+#
+# Mount the ISO and find its mounted volume name
+#
+INSTALLER="$(hdiutil attach "$ISO" | awk -F '\t' '/Apple_HFS/ {print $3}')"
+if [ x"$INSTALLER" == "x" ]; then
+	errorcheck 1 "Cannot attach installer: $ISO"
+fi
+
+check_valid_installer_bundle "$INSTALLER"
+mount_base_system "$INSTALLER"
+make_sparse "$SPARSE"
+make_efi $EFI_DEV "$BASEMOUNT"/usr/standalone/i386/apfs.efi
+
+# we're finished with the ISO and can unmount the file systems
+hdiutil detach "$BASEMOUNT" -quiet
+hdiutil detach "$INSTALLER" -quiet
+
 ## convert the sparseimage disk to a VirtualBox .vdi file
-echo "Creating the VDI file: $VDI"
-echo "This is going to take a while ..."
-rm -f "$VDI"
-VBoxManage convertfromraw "$DEVICE" "$VDI" --format VDI
+##make_vdi "$DEVICE" "$VDI"
 
 #
 # cleanup
 #
-diskutil unmount $EFI_DEV
 hdiutil detach $DEVICE
 rm -rf $SPARSE
-
+exit 0
