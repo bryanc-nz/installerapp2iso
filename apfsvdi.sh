@@ -66,6 +66,9 @@ SHOWPROGRESS=1
 BASEMOUNT=""
 DEVICE=""
 EFI_DEV=""
+INSTALLER=""
+SPARSE=""
+TMPIMG=""
 
 my_usage()
 {
@@ -106,7 +109,7 @@ make_sparse()
 	# Create a sparse bundle - it will be converted to the VDI file
 	#
 	rm -rf $sparse
-	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -size $SIZE"g" $sparse
+	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -volname "Macintosh HD" -size $SIZE"g" $sparse
 	errorcheck $? "Cannot create sparse bundle:  $sparse"
 
 	#
@@ -115,7 +118,7 @@ make_sparse()
 	hdiutil attach $sparse -nomount > "$volumes"
 	errorcheck $? "Cannot attach $sparse"
 
-	DEVICE=$(cat "$volumes"|awk '/GUID_partition_scheme / { print $1 }')
+	DEVICE=$(cat "$volumes"|awk '/GUID_partition_scheme/ { print $1 }')
 	EFI_DEV=$(cat "$volumes"|awk '/EFI/ { print $1 }')
 
 	if [ x"DEVICE" == "x" ]; then
@@ -207,7 +210,8 @@ make_vdi()
 		VBoxManage convertfromraw "$rawdevice" "$vdi" --format VDI
 	else
 		local imgfile="$TMPDIR"/"$PREFIX".tmp
-		touch $imgfile
+		touch "$imgfile"
+		TMPIMG="$imgfile"
 
 		local imgsize=$(diskutil info "$rawdevice"|awk -F '[()]' '/Disk Size/ {print $2}'|awk '{print $1}')
 
@@ -260,6 +264,7 @@ make_vdi()
 
 		wait $pid
 		rm -f "$imgfile"
+		TMPIMG=""
 	fi
 
 	if [ $SHOWPROGRESS -ne 0 ]; then
@@ -355,6 +360,15 @@ get_options()
 	fi
 }
 
+check_tmp_size()
+{
+	local tmpsize=$(df -g "$TMPDIR" | awk '/^\/dev\// {print $4}')
+	showprogress "Temporary directory $TMPDIR has $tmpsize""GB available"
+	if [ $tmpsize -le $SIZE ]; then
+		errorcheck 1 "Insufficient space in $TMPDIR"
+	fi
+}
+
 check_valid_installer_bundle()
 {
 	local installer=$1
@@ -400,11 +414,51 @@ cleanup()
 	#
 	# cleanup
 	#
-	hdiutil detach $DEVICE
-	rm -rf $SPARSE
+	if [ x"$DEVICE" != "x" ]; then
+		hdiutil detach "$DEVICE"
+		DEVICE=""
+	fi
+
+	if [ x"$BASEMOUNT" != "x" ]; then
+		hdiutil detach "$BASEMOUNT"
+		BASEMOUNT=""
+	fi
+
+	if [ x"$INSTALLER" != "x" ]; then
+		hdiutil detach $INSTALLER
+		DEVICE=""
+	fi
+
+	if [ x"$SPARSE" != "x" ]; then
+		rm -rf "$SPARSE"
+		showprogress "Deleted sparse bundle: $SPARSE"
+		SPARSE=""
+	fi
+
+	if [ x"$TMPIMG" != "x" ]; then
+		rm -rf "$TMPIMG"
+		showprogress "Deleted temporary image file: $TMPIMG"
+		TMPIMG=""
+	fi
+
+	if [ $SHOWPROGRESS -ne 0 ]; then
+		# make the cursor visible
+		tput cnorm
+	fi
 }
 
+exitfunc()
+{
+	showprogress ""
+	showprogress "Script is exiting ..."
+	cleanup
+}
+
+trap 'exitfunc' EXIT
+
 get_options $@
+
+check_tmp_size
 
 VDI=$DIR/$PREFIX.vdi
 SPARSE=$TMPDIR/$PREFIX.sparsebundle
@@ -424,7 +478,11 @@ make_efi $EFI_DEV "$BASEMOUNT"/usr/standalone/i386/apfs.efi
 
 # we're finished with the ISO and can unmount the file systems
 hdiutil detach "$BASEMOUNT" -quiet
+BASEMOUNT=""
+
 hdiutil detach "$INSTALLER" -quiet
+INSTALLER=""
+
 
 ## convert the sparseimage disk to a VirtualBox .vdi file
 make_vdi "$DEVICE" "$VDI"
