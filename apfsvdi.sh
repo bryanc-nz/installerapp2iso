@@ -392,7 +392,7 @@ hdiutil detach "$BASEMOUNT" -quiet
 hdiutil detach "$INSTALLER" -quiet
 
 ## convert the sparseimage disk to a VirtualBox .vdi file
-##make_vdi "$DEVICE" "$VDI"
+make_vdi "$DEVICE" "$VDI"
 
 #
 # cleanup
