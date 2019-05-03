@@ -70,6 +70,7 @@ INSTALLER=""
 SPARSE=""
 TMPIMG=""
 TMPVDI=""
+IGNOREPROMPT=0
 
 my_usage()
 {
@@ -343,6 +344,10 @@ get_options()
 			shift;
 			;;
 
+		-y|--yes)
+			IGNOREPROMPT=1;
+			;;
+
 		*)
 			echo "*** ERROR: Invalid syntax."
 			my_usage 1;
@@ -463,6 +468,24 @@ cleanup()
 	fi
 }
 
+check_vdi_exists()
+{
+	local vdi="$1"
+
+	if [ -f "$vdi" ]; then
+		if [ $IGNOREPROMPT -eq 0 ]; then
+			echo "File already exists: $vdi"
+			echo "Overwrite existing file? (yes/no)"
+			read answer
+			if test "$answer" != "Yes" -a "$answer" != "YES" -a "$answer" != "yes" -a "$answer" != "Y" -a "$answer" != "y"; then
+				errorcheck 1 "Aborting app conversion. Your answer was: '$answer'".
+			fi
+			showprogress "Deleting file: $vdi"
+		fi
+		rm -f "$vdi"
+	fi
+}
+
 exitfunc()
 {
 	showprogress ""
@@ -477,6 +500,8 @@ get_options $@
 check_tmp_size
 
 VDI=$DIR/$PREFIX.vdi
+check_vdi_exists "$VDI"
+
 SPARSE=$TMPDIR/$PREFIX.sparsebundle
 
 #
