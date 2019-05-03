@@ -26,11 +26,10 @@
 #
 # 1. Download and install VirtualBox
 # 2. Download the Mojave Installer application from Apple (apple.com)
-# 3. Generate a bootable ISO installer file using a suitable script (InstallerApp2ISO comes to mind for this)
-# 4. Use the generated ISO as input to this script to create a VirtualBox VDI file.
-# 5. Run VirtualBox and create a new macOS 64 bit VM. Use your newly create .vdi file
-# 6. Load your ISO file into the VM's DVD drive
-# 7. Continue with the macOS Mojave installation
+# 3. Use the installer as input to this script to create a VirtualBox VDI file.
+# 4. Run VirtualBox and create a new macOS 64 bit VM. Use your newly create .vdi file
+# 5. Load your ISO file into the VM's DVD drive
+# 6. Continue with the macOS Mojave installation
 #
 
 ##
@@ -41,7 +40,7 @@
 
 #
 # The 'cunning plan' being used in this script is to copy the APFS driver from the
-# Apple macOS Installer ISO to the EFI file tree, along with the nifty EFI startup.nsh
+# Apple macOS Installer Application to the EFI file tree, along with the nifty EFI startup.nsh
 # borrowed from Alexander Willners code.
 #
 # There are no 3rd party binaries installed in the EFI tree or into the macOS filesystem
@@ -57,9 +56,9 @@ set -u
 #
 # Initialise global variables
 #
-ISO=""
+INSTALLERAPP=""
+VDINAME=""
 DIR=""
-PREFIX=""
 SIZE=64
 TMPDIR=""
 SHOWPROGRESS=1
@@ -77,17 +76,19 @@ my_usage()
     echo ""
     echo "Usage:"
     echo ""
-    echo "apfsvdi.sh  -i|--iso <macOS Installer ISO>"
+    echo "apfsvdi.sh  -i|--installer <macOS Installer>"
+    echo "            [-n|--name <VDI disk name>]"
     echo "            [-q|--quiet]"
     echo "            [-s|--size <VDI disk size in GB - default 64>]"
     echo "            [-t|--tmpdir <Directory for temporary files>]"
+    echo "            [-y|--yes] Reply 'yes' to all prompts"
 	exit $1
 }
 
 errorcheck()
 {
-	local error=$1
-	local msg=$2
+	local error="$1"
+	local msg="$2"
 
 	if [ $error -ne 0 ]; then
 		echo "Error: $msg"
@@ -105,19 +106,19 @@ showprogress()
 make_sparse()
 {
 	local sparse="$1"
-	local volumes=$TMPDIR/$PREFIX.txt
+	local volumes=$TMPDIR/$VDINAME.txt
 
 	#
 	# Create a sparse bundle - it will be converted to the VDI file
 	#
 	rm -rf $sparse
-	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -volname "Macintosh HD" -size $SIZE"g" $sparse
+	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -volname "Macintosh HD" -size $SIZE"g" "$sparse"
 	errorcheck $? "Cannot create sparse bundle:  $sparse"
 
 	#
 	# attach the sparse bundle and get the device ids for the file systems
 	#
-	hdiutil attach $sparse -nomount > "$volumes"
+	hdiutil attach "$sparse" -nomount > "$volumes"
 	errorcheck $? "Cannot attach $sparse"
 
 	DEVICE=$(cat "$volumes"|awk '/GUID_partition_scheme/ { print $1 }')
@@ -213,7 +214,7 @@ make_vdi()
 	if [ $SHOWPROGRESS -eq 0 ]; then
 		VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
 	else
-		local imgfile="$TMPDIR"/"$PREFIX".tmp
+		local imgfile="$TMPDIR"/"$VDINAME".img
 		touch "$imgfile"
 		TMPIMG="$imgfile"
 
@@ -293,22 +294,32 @@ get_options()
 	# Parse the arguments.
 	# ---------------------------------------------------------------
 	if [ $# -eq "0" ]; then
-		echo "*** ERROR: No arguments specified. The --iso option is mandatory."
+		echo "*** ERROR: No arguments specified. The --installer option is mandatory."
 		my_usage 1
 	fi
 
 	while test $# -ge 1;
 	do
-		ARG=$1;
+		ARG=$1
 		shift;
 		case "$ARG" in
-		-i|--iso)
+		-i|--installer)
 			if test $# -eq 0; then
 				echo "*** ERROR: missing --installer argument.";
 				echo "";
 				myusage 1;
 			fi
-			ISO="$1";
+			INSTALLERAPP="$1";
+			shift;
+			;;
+
+		-n|--name)
+			if test $# -eq 0; then
+				echo "*** ERROR: missing --name argument.";
+				echo "";
+				myusage 1;
+			fi
+			VDINAME="$1";
 			shift;
 			;;
 
@@ -355,16 +366,23 @@ get_options()
 		esac
 	done
 
-	if [ x"$ISO" == "x" ]; then
-		errorcheck 1 "No ISO file specified. The --iso option is mandatory."
+	if [ x"$INSTALLERAPP" == "x" ]; then
+		errorcheck 1 "No installer file specified. The --installer option is mandatory."
 	fi
 
-	if [ ! -f "$ISO" ]; then
-		errorcheck 1 "ISO file not found: $ISO"
+	if [ ! -d "$INSTALLERAPP" ]; then
+		errorcheck 1 "Installer app not found: $INSTALLERAPP"
 	fi
 
-	PREFIX="$(basename -s .iso $ISO)"
-	DIR="$(dirname $ISO)"
+	local prefix=$(basename -s .app "$INSTALLERAPP")
+
+	DIR=$(dirname "$INSTALLERAPP")
+	showprogress "DIR: $DIR"
+
+	if [ x"$VDINAME" == "x" ]; then
+		VDINAME="$prefix"
+	fi
+	showprogress "VDI: $DIR/$VDINAME"".vdi"
 
 	if [ x"$TMPDIR" == "x" ]; then
 		TMPDIR=$DIR
@@ -386,20 +404,19 @@ check_tmp_size()
 
 check_valid_installer_bundle()
 {
-	local installer=$1
+	local app=$1
 	#
 	# Check the CFBundleVersion
 	#
-	local app=$(ls -d "$installer"/*.app)
 	local plist="$app/Contents/Info.plist"
 
 	if [ ! -f "$plist" ]; then
-		errorcheck 1 "$installer does not contain an Info.plist file"
+		errorcheck 1 "$app does not contain an Info.plist file"
 	fi
 
 	local version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
 	if [ $version -lt 14000 ]; then
-		errorcheck 1 "Cannot create APFS file system with $installer"
+		errorcheck 1 "Cannot create APFS file system with $app"
 	fi
 }
 
@@ -475,8 +492,10 @@ check_vdi_exists()
 	if [ -f "$vdi" ]; then
 		if [ $IGNOREPROMPT -eq 0 ]; then
 			echo "File already exists: $vdi"
-			echo "Overwrite existing file? (yes/no)"
+			/bin/echo -n "Overwrite existing file? (yes/no): "
 			read answer
+			echo ""
+
 			if test "$answer" != "Yes" -a "$answer" != "YES" -a "$answer" != "yes" -a "$answer" != "Y" -a "$answer" != "y"; then
 				errorcheck 1 "Aborting app conversion. Your answer was: '$answer'".
 			fi
@@ -495,35 +514,24 @@ exitfunc()
 
 trap 'exitfunc' EXIT
 
-get_options $@
+get_options "$@"
 
 check_tmp_size
 
-VDI=$DIR/$PREFIX.vdi
+VDI="$DIR"/"$VDINAME".vdi
 check_vdi_exists "$VDI"
 
-SPARSE=$TMPDIR/$PREFIX.sparsebundle
+SPARSE="$TMPDIR"/"$VDINAME".sparsebundle
 
-#
-# Mount the ISO and find its mounted volume name
-#
-INSTALLER="$(hdiutil attach "$ISO" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-if [ x"$INSTALLER" == "x" ]; then
-	errorcheck 1 "Cannot attach installer: $ISO"
-fi
+check_valid_installer_bundle "$INSTALLERAPP"
+mount_base_system "$INSTALLERAPP"
 
-check_valid_installer_bundle "$INSTALLER"
-mount_base_system "$INSTALLER"
 make_sparse "$SPARSE"
 make_efi $EFI_DEV "$BASEMOUNT"/usr/standalone/i386/apfs.efi
 
-# we're finished with the ISO and can unmount the file systems
+# we're finished with the installer and can unmount the Base System
 hdiutil detach "$BASEMOUNT" -quiet
 BASEMOUNT=""
-
-hdiutil detach "$INSTALLER" -quiet
-INSTALLER=""
-
 
 ## convert the sparseimage disk to a VirtualBox .vdi file
 make_vdi "$DEVICE" "$VDI"
