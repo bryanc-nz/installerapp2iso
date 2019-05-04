@@ -57,6 +57,7 @@ set -u
 # Initialise global variables
 #
 INSTALLERAPP=""
+DESTDIR=$(cd ~/Desktop; pwd)
 VDINAME=""
 DIR=""
 SIZE=64
@@ -78,6 +79,7 @@ my_usage()
     echo ""
     echo "apfsvdi.sh  -i|--installer <macOS Installer>"
     echo "            [-n|--name <VDI disk name>]"
+    echo "            [-o|--output <OutputDir>]"
     echo "            [-q|--quiet]"
     echo "            [-s|--size <VDI disk size in GB - default 64>]"
     echo "            [-t|--tmpdir <Directory for temporary files>]"
@@ -204,12 +206,17 @@ make_vdi()
 	local rawdevice="$1"
 	local vdi="$2"
 
-	echo ""
-	echo "Creating the VDI file: $vdi"
-	echo "This is going to take a while ..."
+	showprogress ""
+	showprogress "Creating the VDI file: $vdi"
+	showprogress "This is going to take a while ..."
 
 	rm -f "$vdi"
-	TMPVDI="$vdi".tmp
+
+	local vdiname=$(basename "$vdi")
+	local vdidir=$(dirname "$vdi")
+
+	TMPVDI="$vdidir"/."$vdiname".tmp
+	showprogress "Writing to: $TMPVDI"
 
 	if [ $SHOWPROGRESS -eq 0 ]; then
 		VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
@@ -284,8 +291,65 @@ make_vdi()
 		fi
 	fi
 
+	showprogress "Move $TMPVDI to $vdi"
 	mv "$TMPVDI" "$vdi"
 	TMPVDI=""
+}
+
+check_disk_space()
+{
+	local path="$1"
+	local required="$2"
+
+	local available=$(df -g "$path" | awk '/^\/dev\// {print $4}')
+	showprogress "Directory $path has $available""GB available"
+
+	if [ $available -le $required ]; then
+		errorcheck 1 "Insufficient space in $path. $required""GB required"
+	fi
+}
+
+check_valid_installer_bundle()
+{
+	local app=$1
+
+	if [ ! -d "$app" ]; then
+		errorcheck 1 "macOS Installer application not found: $app"
+	fi
+
+	#
+	# Check the CFBundleVersion
+	#
+	local plist="$app/Contents/Info.plist"
+
+	if [ ! -f "$plist" ]; then
+		errorcheck 1 "$app does not contain an Info.plist file"
+	fi
+
+	local version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
+	if [ $version -lt 14000 ]; then
+		errorcheck 1 "Cannot create APFS file system from $app"
+	fi
+}
+
+check_vdi_exists()
+{
+	local vdi="$1"
+
+	if [ -f "$vdi" ]; then
+		if [ $IGNOREPROMPT -eq 0 ]; then
+			echo "File already exists: $vdi"
+			/bin/echo -n "Overwrite existing file? (yes/no): "
+			read answer
+			echo ""
+
+			if test "$answer" != "Yes" -a "$answer" != "YES" -a "$answer" != "yes" -a "$answer" != "Y" -a "$answer" != "y"; then
+				errorcheck 1 "Aborting VDI creation. Your answer was: '""$answer""'."
+			fi
+			showprogress "Deleting file: $vdi"
+		fi
+		rm -f "$vdi"
+	fi
 }
 
 get_options()
@@ -305,23 +369,33 @@ get_options()
 		case "$ARG" in
 		-i|--installer)
 			if test $# -eq 0; then
-				echo "*** ERROR: missing --installer argument.";
-				echo "";
-				myusage 1;
+				echo "*** ERROR: missing --installer argument."
+				echo ""
+				myusage 1
 			fi
-			INSTALLERAPP="$1";
-			shift;
+			INSTALLERAPP="$1"
+			shift
 			;;
 
 		-n|--name)
 			if test $# -eq 0; then
-				echo "*** ERROR: missing --name argument.";
-				echo "";
-				myusage 1;
+				echo "*** ERROR: missing --name argument."
+				echo ""
+				myusage 1
 			fi
-			VDINAME="$1";
-			shift;
+			VDINAME="$1"
+			shift
 			;;
+
+        -o|--output)
+            if test $# -eq 0; then
+                echo "*** ERROR: missing --output argument."
+                echo ""
+                exit 1
+            fi
+            DESTDIR="$1"
+            shift
+            ;;
 
 		-q|--quiet)
 			SHOWPROGRESS=0
@@ -329,9 +403,9 @@ get_options()
 
 		-s|--size)
 			if test $# -eq 0; then
-				echo "*** ERROR: missing --size argument.";
-				echo "";
-				myusage 1;
+				echo "*** ERROR: missing --size argument."
+				echo ""
+				myusage 1
 			fi
 			SIZE="$1";
 			if test "$SIZE" -lt 10; then
@@ -342,82 +416,62 @@ get_options()
 				echo "$SIZE GB is too large to install."
 				myusage 1
 			fi
-			shift;
+			shift
 			;;
 
 		-t|--tmpdir)
 			if test $# -eq 0; then
-				echo "*** ERROR: missing --tmpdir argument.";
-				echo "";
-				myusage 1;
+				echo "*** ERROR: missing --tmpdir argument."
+				echo ""
+				myusage 1
 			fi
-			TMPDIR="$1";
-			shift;
+			TMPDIR="$1"
+			shift
 			;;
 
 		-y|--yes)
-			IGNOREPROMPT=1;
+			IGNOREPROMPT=1
 			;;
 
 		*)
 			echo "*** ERROR: Invalid syntax."
-			my_usage 1;
+			my_usage 1
 			;;
 		esac
 	done
 
 	if [ x"$INSTALLERAPP" == "x" ]; then
-		errorcheck 1 "No installer file specified. The --installer option is mandatory."
+		errorcheck 1 "macOS Installer application not specified. The --installer option is mandatory."
+	fi
+	check_valid_installer_bundle "$INSTALLERAPP"
+
+	if [ ! -e "$DESTDIR" ]; then
+		errorcheck 1 "Destination directory is missing: $DESTDIR"
 	fi
 
-	if [ ! -d "$INSTALLERAPP" ]; then
-		errorcheck 1 "Installer app not found: $INSTALLERAPP"
+	showprogress "DESTDIR: $DESTDIR"
+	local required=$SIZE
+	if [ $SHOWPROGRESS -ne 0 ]; then
+		required=$(($SIZE * 2))
 	fi
+	check_disk_space "$DESTDIR" $required
 
 	local prefix=$(basename -s .app "$INSTALLERAPP")
-
-	DIR=$(dirname "$INSTALLERAPP")
-	showprogress "DIR: $DIR"
 
 	if [ x"$VDINAME" == "x" ]; then
 		VDINAME="$prefix"
 	fi
-	showprogress "VDI: $DIR/$VDINAME"".vdi"
+	showprogress "VDI: $DESTDIR/$VDINAME"".vdi"
 
 	if [ x"$TMPDIR" == "x" ]; then
-		TMPDIR=$DIR
+		TMPDIR=$DESTDIR
 	fi
 
 	if [ ! -e "$TMPDIR" ]; then
 		errorcheck 1 "Temporary directory is missing: $TMPDIR"
 	fi
-}
-
-check_tmp_size()
-{
-	local tmpsize=$(df -g "$TMPDIR" | awk '/^\/dev\// {print $4}')
-	showprogress "Temporary directory $TMPDIR has $tmpsize""GB available"
-	if [ $tmpsize -le $SIZE ]; then
-		errorcheck 1 "Insufficient space in $TMPDIR"
-	fi
-}
-
-check_valid_installer_bundle()
-{
-	local app=$1
-	#
-	# Check the CFBundleVersion
-	#
-	local plist="$app/Contents/Info.plist"
-
-	if [ ! -f "$plist" ]; then
-		errorcheck 1 "$app does not contain an Info.plist file"
-	fi
-
-	local version="$(/usr/libexec/PlistBuddy -c "print :CFBundleVersion" "${plist}")"
-	if [ $version -lt 14000 ]; then
-		errorcheck 1 "Cannot create APFS file system with $app"
-	fi
+	showprogress "TMPDIR: $TMPDIR"
+	check_disk_space "$TMPDIR" $SIZE
 }
 
 mount_base_system()
@@ -456,11 +510,6 @@ cleanup()
 		BASEMOUNT=""
 	fi
 
-	if [ x"$INSTALLER" != "x" ]; then
-		hdiutil detach $INSTALLER
-		DEVICE=""
-	fi
-
 	if [ x"$SPARSE" != "x" ]; then
 		rm -rf "$SPARSE"
 		showprogress "Deleted sparse bundle: $SPARSE"
@@ -485,24 +534,24 @@ cleanup()
 	fi
 }
 
-check_vdi_exists()
+run_make_vdi()
 {
-	local vdi="$1"
+	local vdi="$DESTDIR"/"$VDINAME".vdi
+	check_vdi_exists "$vdi"
 
-	if [ -f "$vdi" ]; then
-		if [ $IGNOREPROMPT -eq 0 ]; then
-			echo "File already exists: $vdi"
-			/bin/echo -n "Overwrite existing file? (yes/no): "
-			read answer
-			echo ""
+	SPARSE="$TMPDIR"/"$VDINAME".sparsebundle
 
-			if test "$answer" != "Yes" -a "$answer" != "YES" -a "$answer" != "yes" -a "$answer" != "Y" -a "$answer" != "y"; then
-				errorcheck 1 "Aborting app conversion. Your answer was: '$answer'".
-			fi
-			showprogress "Deleting file: $vdi"
-		fi
-		rm -f "$vdi"
-	fi
+	mount_base_system "$INSTALLERAPP"
+
+	make_sparse "$SPARSE"
+	make_efi $EFI_DEV "$BASEMOUNT"/usr/standalone/i386/apfs.efi
+
+	# we're finished with the installer and can unmount the Base System
+	hdiutil detach "$BASEMOUNT" -quiet
+	BASEMOUNT=""
+
+	## convert the sparseimage disk to a VirtualBox .vdi file
+	make_vdi "$DEVICE" "$vdi"
 }
 
 exitfunc()
@@ -515,26 +564,7 @@ exitfunc()
 trap 'exitfunc' EXIT
 
 get_options "$@"
-
-check_tmp_size
-
-VDI="$DIR"/"$VDINAME".vdi
-check_vdi_exists "$VDI"
-
-SPARSE="$TMPDIR"/"$VDINAME".sparsebundle
-
-check_valid_installer_bundle "$INSTALLERAPP"
-mount_base_system "$INSTALLERAPP"
-
-make_sparse "$SPARSE"
-make_efi $EFI_DEV "$BASEMOUNT"/usr/standalone/i386/apfs.efi
-
-# we're finished with the installer and can unmount the Base System
-hdiutil detach "$BASEMOUNT" -quiet
-BASEMOUNT=""
-
-## convert the sparseimage disk to a VirtualBox .vdi file
-make_vdi "$DEVICE" "$VDI"
+run_make_vdi
 
 cleanup
 exit 0
