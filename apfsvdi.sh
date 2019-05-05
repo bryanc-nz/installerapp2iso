@@ -149,6 +149,10 @@ make_efi()
 	local efi_dev="$1"
 	local driver="$2"
 
+	if [ ! -f "$driver" ]; then
+		errorcheck 1 "Cannot locate driver: $driver"
+	fi
+
 	local quiet="quiet"
 	if [ $SHOWPROGRESS -ne 0 ]; then
 		quiet=""
