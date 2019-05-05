@@ -543,7 +543,7 @@ case $MY_OSXVERSION in
         MY_OSXSCRIPT="10.11-10.12";;
     10.13|10.13.1|10.13.2|10.13.3|10.13.4|10.13.5|10.13.6)
         MY_OSXSCRIPT="10.13-10.14";;
-    10.14|10.14.1|10.14.2)
+    10.14|10.14.1|10.14.2|10.14.3|10.14.4)
         MY_OSXSCRIPT="10.13-10.14";;
     *)
         echo "*** ERROR: Invalid OSX version specified: $MY_OSXVERSION";
