@@ -223,7 +223,7 @@ make_vdi()
 	showprogress "Writing to: $TMPVDI"
 
 	if [ $SHOWPROGRESS -eq 0 ]; then
-		VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
+		/usr/local/bin/VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
 	else
 		local imgfile="$TMPDIR"/"$VDINAME".img
 		touch "$imgfile"
@@ -556,6 +556,10 @@ run_make_vdi()
 
 	## convert the sparseimage disk to a VirtualBox .vdi file
 	make_vdi "$DEVICE" "$vdi"
+
+	if [ -e /usr/local/bin/vboximg-mount ]; then
+		/usr/local/bin/vboximg-mount -l -i "$vdi"
+	fi
 }
 
 exitfunc()
@@ -566,6 +570,10 @@ exitfunc()
 }
 
 trap 'exitfunc' EXIT
+
+if [ ! -e /usr/local/bin/VBoxManage ]; then
+	errorcheck 1 "Please install VirtualBox (https://www.virtualbox.org/) before running."
+fi
 
 get_options "$@"
 run_make_vdi
