@@ -103,6 +103,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		}
 	}
 
+	@IBAction func gitHub(_ sender: Any)
+	{
+		guard let url = URL(string: "https://github.com/bryanc-nz/installerapp2iso") else { return }
+		NSWorkspace.shared.open(url)
+	}
+
 	func openWindow(forURL url: URL)
 	{
 	   	let name = url.lastPathComponent
