@@ -367,12 +367,53 @@ class InstallToISOWindow : NSWindowController {
 		params.runModal(parent: self)
 	}
 
-	func runInstallerToVDI(_ name: String, _ size: Double)
+	func runInstallerToVDI(_ file: String, _ size: Double)
+	{
+		func fileExists(_ path: String) -> Bool
+		{
+			return FileManager.default.fileExists(atPath: path)
+		}
+
+		let filePath = m_output.stringValue + "/" + file + ".vdi"
+		if !fileExists(filePath) {
+			runInstallerToVDIScript(file, size)
+			return
+		}
+
+		let alert: NSAlert = NSAlert()
+
+		alert.addButton(withTitle: NSLocalizedString("Overwrite", comment: ""))
+		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+
+		alert.messageText = NSLocalizedString("File exists", comment: "")
+
+		var msg = NSLocalizedString("File:", comment: "") + " \"" + file + "\" "
+		msg += NSLocalizedString("exists", comment: "") + ".\n\n"
+		msg += NSLocalizedString("Press 'Cancel' to abort.", comment: "")
+		alert.informativeText = msg
+
+		alert.beginSheetModal(for: window!) {
+			[weak self] response in
+			guard let this = self else { return }
+			switch response {
+			case .alertFirstButtonReturn:
+				this.runInstallerToVDIScript(file, size)
+				break
+
+			case .alertSecondButtonReturn:
+				break
+
+			default:
+				break
+			}
+		}
+	}
+
+	func runInstallerToVDIScript(_ name: String, _ size: Double)
 	{
 		addText("", append: false)
 
-		var env = ProcessInfo.processInfo.environment
-		env["TERM"] = "vt220" // conversion script requires a valid TERM
+		let env = [String:String]()
 
 		guard let script = Bundle.main.path(forResource: "apfsvdi", ofType: "sh") else { return }
 
@@ -384,18 +425,21 @@ class InstallToISOWindow : NSWindowController {
 		cmd += " --name \"" + name + "\""
 		cmd += " --size \"" + String(format: "%.0f", size + 0.5) + "\""
 
+		if m_verbose.indexOfSelectedItem == 0 {
+			cmd += " -q"
+		}
+
 		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
 		let args = ["-c", cmd]
 
-		executeBashScript(args: args, env: env)
+		executeBashScript(args: args, localenv: env)
 	}
 
 	func installerToISO()
 	{
 		addText("", append: false)
 
-		var env = ProcessInfo.processInfo.environment
-		env["TERM"] = "vt220" // conversion script requires a valid TERM
+		var env = [String:String]()
 		env["AUTH_PROMPT"] = "InstallerApp2ISO.sh " + NSLocalizedString("wants to make changes.", comment: "")
 
 		let verbosity = m_verbose.indexOfSelectedItem
@@ -418,11 +462,17 @@ class InstallToISOWindow : NSWindowController {
 		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
 		let args = ["-c", cmd]
 
-		executeBashScript(args: args, env: env)
+		executeBashScript(args: args, localenv: env)
 	}
 
-	func executeBashScript(args: [String], env: [String : String])
+	func executeBashScript(args: [String], localenv: [String : String])
 	{
+		var env = ProcessInfo.processInfo.environment
+		for (key, value) in localenv {
+			env[key] = value
+		}
+		env["TERM"] = "vt220" // conversion script requires a valid TERM
+
 		var hasProgress = false
 		m_output_file = ""
 
