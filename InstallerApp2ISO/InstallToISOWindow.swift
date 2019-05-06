@@ -33,13 +33,19 @@ extension InstallToISOWindow : NSWindowDelegate {
 }
 
 class InstallToISOWindow : NSWindowController {
+	enum Action: Int {
+		case CREATE_ISO
+		case CREATE_VDI
+	}
+
 
 	@IBOutlet weak var m_drop_target: DropView!
 	@IBOutlet weak var m_path: NSTextField!
 	@IBOutlet weak var m_busy: NSProgressIndicator!
 	@IBOutlet weak var m_verbose: NSPopUpButton!
 	@IBOutlet weak var m_dry_run: NSButton!
-	@IBOutlet weak var m_create_iso: NSButton!
+	@IBOutlet weak var m_choose_action: NSPopUpButton!
+	@IBOutlet weak var m_perform_action: NSButton!
 	@IBOutlet weak var m_cancel: NSButton!
 	@IBOutlet weak var m_scrollview: NSScrollView!
 	@IBOutlet weak var m_output: NSComboBox!
@@ -57,6 +63,15 @@ class InstallToISOWindow : NSWindowController {
 	var isEmpty: Bool {
 		return m_proc == nil &&
 			   m_installer_path.isEmpty
+	}
+
+	var selectedAction: Action
+	{
+		let index = m_choose_action.indexOfSelectedItem
+		guard let action = Action(rawValue: index) else {
+			return Action.CREATE_ISO
+		}
+		return action
 	}
 
 	override func windowDidLoad()
@@ -97,7 +112,8 @@ class InstallToISOWindow : NSWindowController {
 		m_path.isHidden = m_installer_path.isEmpty
 		m_busy.isHidden = enabled
 
-		m_create_iso.isEnabled = enabled && !m_installer_path.isEmpty
+		m_choose_action.isEnabled = enabled && !m_installer_path.isEmpty
+		m_perform_action.isEnabled = enabled && !m_installer_path.isEmpty
 		m_cancel.isEnabled = !enabled
 
 		m_verbose.isEnabled = enabled
@@ -163,9 +179,33 @@ class InstallToISOWindow : NSWindowController {
 		}
 	}
 
-	@IBAction func createISO(_ sender: Any)
+	@IBAction func chooseAction(_ sender: Any)
 	{
-		installerToISO()
+		var image: NSImage!
+
+		switch selectedAction {
+		case .CREATE_ISO:
+			image = NSImage(named: "ISO")
+			break
+
+		case .CREATE_VDI:
+			image = NSImage(named: "VDI")
+			break
+		}
+		m_perform_action.image = image
+	}
+
+	@IBAction func performAction(_ sender: Any)
+	{
+		switch selectedAction {
+		case .CREATE_ISO:
+			installerToISO()
+			break
+
+		case .CREATE_VDI:
+			installerToVDI()
+			break
+		}
 		enableControls()
 	}
 
@@ -277,9 +317,38 @@ class InstallToISOWindow : NSWindowController {
 		}
 	}
 
+	func installerToVDI()
+	{
+		let params = VDIParamsWindow(windowNibName: "VDIParamsWindow")
+		params.setup()
+		params.runModal(parent: self)
+	}
+
+	func runInstallerToVDI(_ name: String, _ size: Double)
+	{
+		addText("", append: false)
+
+		var env = ProcessInfo.processInfo.environment
+		env["TERM"] = "vt220" // conversion script requires a valid TERM
+
+		guard let script = Bundle.main.path(forResource: "apfsvdi", ofType: "sh") else { return }
+
+		var cmd = "\"" + script + "\""
+		cmd += " -i \"" + m_installer_path + "\""
+		cmd += " -o \"" + m_output.stringValue + "\""
+		cmd += " -t \"" + tmpDirectory() + "\""
+		cmd += " -y"
+		cmd += " --name \"" + name + "\""
+		cmd += " --size \"" + String(format: "%.0f", size + 0.5) + "\""
+
+		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
+		let args = ["-c", cmd]
+
+		executeBashScript(args: args, env: env)
+	}
+
 	func installerToISO()
 	{
-		m_output_file = ""
 		addText("", append: false)
 
 		var env = ProcessInfo.processInfo.environment
@@ -306,27 +375,58 @@ class InstallToISOWindow : NSWindowController {
 		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
 		let args = ["-c", cmd]
 
+		executeBashScript(args: args, env: env)
+	}
+
+	func executeBashScript(args: [String], env: [String : String])
+	{
+		var hasProgress = false
+		m_output_file = ""
+
 		m_proc = Execute.readPipe("/bin/bash", args: args, env: env) {
 			[weak self] text_in in
 			if let text = text_in {
-				//Swift.print(text)
-				if let this = self {
-					let t = this.stripTerminalEscape(text)
-					this.addText(t)
+				guard let this = self else { return }
+
+				let t = this.stripTerminalEscape(text)
+				if t.hasPrefix("Completed:") {
+					if hasProgress {
+						this.deleteLastLine()
+					}
+					hasProgress = true
 				}
+				this.addText(t)
 				return
 			}
 
 			// nil text implies we're finished
 			main_async {
 				[weak self] in
-				if let this = self {
-					this.m_proc = nil
-					this.setOutputFileName()
-					this.enableControls()
-					NSApp.activate(ignoringOtherApps: true)
-					this.removeTmpDirectory()
+				guard let this = self else { return }
+
+				this.m_proc = nil
+				this.setOutputFileName()
+				this.enableControls()
+				NSApp.activate(ignoringOtherApps: true)
+				this.removeTmpDirectory()
+			}
+		}
+	}
+
+	func deleteLastLine()
+	{
+		main_async {
+			[weak self] in
+			guard let this = self else { return }
+
+			var lines = this.m_text.string.asLines
+			if lines.count > 0 {
+				lines.remove(at: lines.count - 1)
+				var text = ""
+				for line in lines {
+					text += line + "\n"
 				}
+				this.m_text.string = text
 			}
 		}
 	}
@@ -337,10 +437,22 @@ class InstallToISOWindow : NSWindowController {
 		for line in lines.reversed() { // name is at end of text - reverse traversal is faster
 			let t = line.trim()
 			if t.contains("-->") {
-				let a = t.split(separator: " ")
-				if let name = a.last {
-					m_output_file = String(name)
-					return
+				switch selectedAction {
+				case .CREATE_ISO:
+					let a = t.split(separator: " ")
+					if let name = a.last {
+						m_output_file = String(name)
+						return
+					}
+					break
+
+				case .CREATE_VDI:
+					let a = t.split(separator: ":")
+					if let name = a.last {
+						m_output_file = String(name).trim()
+						return
+					}
+					break
 				}
 			}
 		}
@@ -378,14 +490,14 @@ class InstallToISOWindow : NSWindowController {
 		
 		main_async {
 			[weak self] in
-			if let this = self {
-				if append {
-					this.m_text.string += text
-				} else {
-					this.m_text.string = text
-				}
-				this.m_text.scrollToEnd()
+			guard let this = self else { return }
+
+			if append {
+				this.m_text.string += text
+			} else {
+				this.m_text.string = text
 			}
+			this.m_text.scrollToEnd()
 		}
 	}
 }

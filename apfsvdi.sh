@@ -221,6 +221,7 @@ make_vdi()
 
 	TMPVDI="$vdidir"/."$vdiname".tmp
 	showprogress "Writing to: $TMPVDI"
+	rm -f "$TMPVDI"
 
 	if [ $SHOWPROGRESS -eq 0 ]; then
 		/usr/local/bin/VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
@@ -237,7 +238,7 @@ make_vdi()
 		local start_time="$(date -u +%s)"
 		{
 			dd if="$rawdevice" bs=65536 2> /dev/null | tee "$imgfile" | \
-			VBoxManage convertfromraw stdin "$TMPVDI" $imgsize --format VDI
+			/usr/local/bin/VBoxManage convertfromraw stdin "$TMPVDI" $imgsize --format VDI
 		}&
 		pid=$!
 
@@ -560,6 +561,8 @@ run_make_vdi()
 	if [ -e /usr/local/bin/vboximg-mount ]; then
 		/usr/local/bin/vboximg-mount -l -i "$vdi"
 	fi
+
+	echo "--> Created VDI file: $vdi"
 }
 
 exitfunc()
@@ -569,6 +572,7 @@ exitfunc()
 	cleanup
 }
 
+trap 'exitfunc' TERM
 trap 'exitfunc' EXIT
 
 if [ ! -e /usr/local/bin/VBoxManage ]; then
