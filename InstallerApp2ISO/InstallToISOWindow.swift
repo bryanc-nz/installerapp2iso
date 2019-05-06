@@ -74,6 +74,19 @@ class InstallToISOWindow : NSWindowController {
 		return action
 	}
 
+	var apfsInstaller: Bool {
+		if m_installer_path.isEmpty { return false }
+		
+		let url = URL(fileURLWithPath: m_installer_path + "/Contents/Info.plist")
+		if let plist = NSDictionary(contentsOf: url) as? [String:Any],
+		   let cfbundleversion = plist["CFBundleVersion"] as? String,
+		   let version = Int(cfbundleversion),
+		   version > 14000 {
+			return true
+		}
+		return false
+	}
+
 	override func windowDidLoad()
 	{
 		m_drop_target.fileCheck = isValidInstaller
@@ -114,6 +127,11 @@ class InstallToISOWindow : NSWindowController {
 
 		m_choose_action.isEnabled = enabled
 		m_perform_action.isEnabled = enabled && !m_installer_path.isEmpty
+
+		if m_perform_action.isEnabled && selectedAction == .CREATE_VDI {
+		 	m_perform_action.isEnabled = apfsInstaller
+		}
+
 		m_cancel.isEnabled = !enabled
 
 		m_verbose.isEnabled = enabled
@@ -217,6 +235,7 @@ class InstallToISOWindow : NSWindowController {
 			break
 		}
 		m_perform_action.image = image
+		enableControls()
 	}
 
 	@IBAction func performAction(_ sender: Any)
