@@ -75,19 +75,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		return true
 	}
 
-	@IBAction func export(_ sender: Any)
-	{
-		guard let scriptURL = Bundle.main.url(forResource: "InstallerApp2ISO", withExtension: "sh") else { return }
-
-		let dialog = NSSavePanel()
-		dialog.nameFieldStringValue = "InstallerApp2ISO.sh"
-
-		if (dialog.runModal() == NSApplication.ModalResponse.OK),
-		   let url = dialog.url {
-			try? FileManager.default.copyItem(at: scriptURL, to: url)
-		}
-	}
-
 	@IBAction func newDocument(_ sender: Any)
 	{
 		newWindow("")

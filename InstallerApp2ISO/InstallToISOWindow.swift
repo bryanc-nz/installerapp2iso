@@ -112,7 +112,7 @@ class InstallToISOWindow : NSWindowController {
 		m_path.isHidden = m_installer_path.isEmpty
 		m_busy.isHidden = enabled
 
-		m_choose_action.isEnabled = enabled && !m_installer_path.isEmpty
+		m_choose_action.isEnabled = enabled
 		m_perform_action.isEnabled = enabled && !m_installer_path.isEmpty
 		m_cancel.isEnabled = !enabled
 
@@ -152,6 +152,30 @@ class InstallToISOWindow : NSWindowController {
 			return
 		}
 		saveLog()
+	}
+
+	@IBAction func export(_ sender: Any)
+	{
+		var name = ""
+		switch selectedAction {
+		case .CREATE_ISO:
+			name = "InstallerApp2ISO"
+			break
+
+		case .CREATE_VDI:
+			name = "apfsvdi"
+			break
+		}
+
+		guard let scriptURL = Bundle.main.url(forResource: name, withExtension: "sh") else { return }
+
+		let dialog = NSSavePanel()
+		dialog.nameFieldStringValue = name + ".sh"
+
+		if (dialog.runModal() == NSApplication.ModalResponse.OK),
+		   let url = dialog.url {
+			try? FileManager.default.copyItem(at: scriptURL, to: url)
+		}
 	}
 
 	@IBAction func showInFinder(_ sender: Any)

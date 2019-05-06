@@ -96,7 +96,7 @@
                             <menuItem title="Export Script..." id="wy8-P0-0Ec" userLabel="Export ...">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="export:" target="Voe-Tx-rLC" id="G5q-v7-zLA"/>
+                                    <action selector="export:" target="-1" id="ITL-6v-nsY"/>
                                 </connections>
                             </menuItem>
                             <menuItem title="Save Log…" keyEquivalent="s" id="pxx-59-PXV">
