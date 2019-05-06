@@ -506,6 +506,7 @@ class InstallToISOWindow : NSWindowController {
 				this.removeTmpDirectory()
 			}
 		}
+		enableControls()
 	}
 
 	func deleteLastLine()
