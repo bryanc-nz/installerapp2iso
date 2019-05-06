@@ -234,6 +234,8 @@ class InstallToISOWindow : NSWindowController {
 			image = NSImage(named: "VDI")
 			break
 		}
+		
+		m_output_file = ""
 		m_perform_action.image = image
 		enableControls()
 	}
