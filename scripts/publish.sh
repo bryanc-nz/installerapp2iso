@@ -12,7 +12,7 @@ KEYS=/Users/bryan/Software-Swift5/sparkle-keys
 APPNAME=InstallerApp2ISO
 APP=$APPNAME.app
 NAME=installerapp2iso
-APPCAST=$NAME.xml
+APPCAST=$NAME"appcast".xml
 
 SITE=https://www.whatroute.net
 PUBLISH_URL=https://www.whatroute.net/software
