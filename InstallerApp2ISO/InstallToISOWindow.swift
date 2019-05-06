@@ -87,6 +87,11 @@ class InstallToISOWindow : NSWindowController {
 		return false
 	}
 
+	var virtualboxInstalled: Bool {
+		let virtualbox = "/Applications/VirtualBox.app"
+		return FileManager.default.fileExists(atPath: virtualbox)
+	}
+
 	override func windowDidLoad()
 	{
 		m_drop_target.fileCheck = isValidInstaller
@@ -129,7 +134,7 @@ class InstallToISOWindow : NSWindowController {
 		m_perform_action.isEnabled = enabled && !m_installer_path.isEmpty
 
 		if m_perform_action.isEnabled && selectedAction == .CREATE_VDI {
-		 	m_perform_action.isEnabled = apfsInstaller
+		 	m_perform_action.isEnabled = apfsInstaller && virtualboxInstalled
 		}
 
 		m_cancel.isEnabled = !enabled
