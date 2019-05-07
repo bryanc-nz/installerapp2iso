@@ -117,31 +117,31 @@ class InstallToISOWindow : NSWindowController {
 
 	func enableControls()
 	{
-		let enabled = (m_proc == nil)
+		let idle = (m_proc == nil)
 
-		if !enabled && m_busy.isHidden {
+		if !idle && m_busy.isHidden {
 			m_busy.startAnimation(self)
 		}
 
-		if enabled && !m_busy.isHidden {
+		if idle && !m_busy.isHidden {
 			m_busy.stopAnimation(self)
 		}
 
 		m_path.isHidden = m_installer_path.isEmpty
-		m_busy.isHidden = enabled
+		m_busy.isHidden = idle
 
-		m_choose_action.isEnabled = enabled
-		m_perform_action.isEnabled = enabled && !m_installer_path.isEmpty
+		m_choose_action.isEnabled = idle
+		m_perform_action.isEnabled = idle && !m_installer_path.isEmpty
 
 		if m_perform_action.isEnabled && selectedAction == .CREATE_VDI {
 		 	m_perform_action.isEnabled = apfsInstaller && virtualboxInstalled
 		}
 
-		m_cancel.isEnabled = !enabled
+		m_cancel.isEnabled = !idle
 
-		m_verbose.isEnabled = enabled
-		m_output.isEnabled = enabled
-		m_output_choose.isEnabled = enabled
+		m_verbose.isEnabled = idle
+		m_output.isEnabled = idle
+		m_output_choose.isEnabled = idle
 
 		m_show_in_finder.isHidden = m_output_file.isEmpty
 	}
