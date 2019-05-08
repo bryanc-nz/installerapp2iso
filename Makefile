@@ -40,11 +40,15 @@ $(EXPORT): $(ARCHIVE)
 
 $(NOTARIZED): $(EXPORT)
 	rm -rf $(NOTARIZED)
-	until $(XCODE) \
-	-exportNotarizedApp \
-	-archivePath $(ARCHIVE) \
-	-exportPath $(EXPORT); \
-	do \
+	while true; do \
+		$(XCODE) \
+			-exportNotarizedApp \
+			-archivePath $(ARCHIVE) \
+			-exportPath $(EXPORT); \
+		if [ $$? -eq 0 ]; then \
+			echo "Notarize complete for:" $(NOTARIZED); \
+			break; \
+		fi; \
 		date; \
 		echo wait 10s...; \
 		sleep 10; \
