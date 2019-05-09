@@ -19,28 +19,33 @@ debug:
 		-configuration Debug \
 		CONFIGURATION_BUILD_DIR=$(DIR)/build/Debug
 
-release:
+release: clean
 	$(XCODE) -project $(PROJECT).xcodeproj \
 	-alltargets \
 	-configuration Release \
 	CONFIGURATION_BUILD_DIR=$(DIR)/build/Release
 
-$(ARCHIVE):
+$(ARCHIVE): clean
 	$(XCODE) -project $(PROJECT).xcodeproj \
 	-scheme $(SCHEME) \
 	-archivePath $(ARCHIVE) \
 	archive
 
-$(EXPORT): $(ARCHIVE)
+archive: $(ARCHIVE)
+
+$(EXPORT): archive
 	$(XCODE) \
 	-exportArchive \
 	-archivePath $(ARCHIVE) \
 	-exportPath $(EXPORT) \
 	-exportOptionsPlist $(DIR)/$(SRC)/ExportOptions.plist
 
-$(NOTARIZED): $(EXPORT)
+export: $(EXPORT)
+
+$(NOTARIZED): export
 	rm -rf $(NOTARIZED)
 	while true; do \
+		date; \
 		$(XCODE) \
 			-exportNotarizedApp \
 			-archivePath $(ARCHIVE) \
@@ -49,12 +54,13 @@ $(NOTARIZED): $(EXPORT)
 			echo "Notarize complete for:" $(NOTARIZED); \
 			break; \
 		fi; \
-		date; \
 		echo wait 10s...; \
 		sleep 10; \
 	done
 
-publish: clean $(NOTARIZED)
+notarized: $(NOTARIZED)
+
+publish: notarized
 	sh scripts/publish.sh $(NOTARIZED)
 
 clean:
