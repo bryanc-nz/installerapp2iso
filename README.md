@@ -46,11 +46,6 @@ This screenshot shows a successful run of InstallerApp2ISO.
 
 ![](images/installerapp2iso-screenshot.png)
 
-##### Create APFS vdi file from Installer
-<video width="640" controls>
-	<source src="images/installer2vdi.mp4" type="video/mp4">
-</video>
-
 ### Advanced Usage
 #### Run from the command line
 You can use **File/Export Script** to export the embedded shell script engine (InstallerApp2ISO.sh) to another folder on your machine and then run it from the Terminal command line.
