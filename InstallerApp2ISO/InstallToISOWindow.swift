@@ -437,9 +437,7 @@ class InstallToISOWindow : NSWindowController {
 		}
 
 		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
-		let args = ["-c", cmd]
-
-		executeBashScript(args: args, localenv: env)
+		executeBashScript(cmd: cmd, localenv: env)
 	}
 
 	func installerToISO()
@@ -467,13 +465,13 @@ class InstallToISOWindow : NSWindowController {
 		}
 
 		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
-		let args = ["-c", cmd]
-
-		executeBashScript(args: args, localenv: env)
+		executeBashScript(cmd: cmd, localenv: env)
 	}
 
-	func executeBashScript(args: [String], localenv: [String : String])
+	func executeBashScript(cmd: String, localenv: [String : String])
 	{
+		let args = ["-c", cmd]
+
 		var env = ProcessInfo.processInfo.environment
 		for (key, value) in localenv {
 			env[key] = value
