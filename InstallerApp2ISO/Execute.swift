@@ -47,48 +47,10 @@ class Execute {
 
 	static func readPipe(_ prog: String, args: [String], env: [String : String]? = nil, reader: @escaping ((String?)->Void)) -> Process?
 	{
-		var observer: NSObjectProtocol!
-
 		func endProcess(process: Process)
 		{
-			if observer != nil {
-				NotificationCenter.default.removeObserver(observer!)
-				observer = nil
-			}
-
 			reader(nil)
 			closePipe(process: process)
-		}
-
-		func backgroundRead(process: Process) -> Bool
-		{
-			guard let pipe = process.standardOutput as? Pipe else {
-				reader(NSLocalizedString("stdout is not a pipe!!", comment: ""))
-				return false
-			}
-			let handle = pipe.fileHandleForReading
-
-			observer = NotificationCenter.default.addObserver(
-					  forName: .NSFileHandleDataAvailable,
-					   object: handle,
-						queue: OperationQueue.main,
-						using: {
-							notification in
-							if notification.name != .NSFileHandleDataAvailable {
-								return
-							}
-
-							let data = handle.availableData
-							if data.count == 0 {
-								endProcess(process: process)
-							} else if let text = String(data: data, encoding: String.Encoding.utf8) {
-								reader(text)
-								handle.waitForDataInBackgroundAndNotify()
-							}
-						})
-
-			handle.waitForDataInBackgroundAndNotify()
-			return true
 		}
 
 		var failed = false
@@ -104,24 +66,24 @@ class Execute {
 
 		let wPipe = Pipe()
 		proc.standardInput = wPipe
+		
+		pipe.fileHandleForReading.readabilityHandler = {
+			handle in
+			let data = handle.availableData
+			if data.count == 0 {
+				endProcess(process: proc)
+			} else if let text = String(data: data, encoding: String.Encoding.utf8) {
+				if text.count == 0 {
+					endProcess(process: proc)
+				} else {
+					reader(text)
+				}
+			} else {
+				endProcess(process: proc)
+			}
+		}
 
 		if #available(OSX 10.13, *) {
-			pipe.fileHandleForReading.readabilityHandler = {
-				handle in
-				let data = handle.availableData
-				if data.count == 0 {
-					endProcess(process: proc)
-				} else if let text = String(data: data, encoding: String.Encoding.utf8) {
-					if text.count == 0 {
-						endProcess(process: proc)
-					} else {
-						reader(text)
-					}
-				} else {
-					endProcess(process: proc)
-				}
-			}
-
 			let url = URL(fileURLWithPath: prog)
 			proc.executableURL = url
 			do {
@@ -131,12 +93,13 @@ class Execute {
 				reader("Exception caught running " + prog + ": " + error.localizedDescription)
 			}
 		} else {  // pre 10.13
-			if backgroundRead(process: proc) {
-				proc.launchPath = prog
-				proc.launch()
-			} else {
-				failed = true
+			proc.terminationHandler = {
+				proc in
+				endProcess(process: proc)
 			}
+
+			proc.launchPath = prog
+			proc.launch()
 		}
 
 		if failed { return nil }
