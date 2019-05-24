@@ -270,8 +270,8 @@ make_vdi()
 					total = elapsed / completed
 					remaining = total - elapsed
 				}
-				printf("Completed: %.1f%%, Elapsed(sec): %.1f, Remaining(sec): %.1f, Rate(MB/s): %.3f",
-						completed * 100.0, elapsed, remaining, rate)
+				printf("Completed: %.1f%%, Elapsed(sec): %.1f, Rate(MB/s): %.3f, Remaining(sec): %.1f",
+						completed * 100.0, elapsed, rate, remaining)
 
 			}')
 
