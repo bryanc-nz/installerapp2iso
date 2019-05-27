@@ -69,7 +69,7 @@
 		935140E622612CAD005629C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		935140E922612CAD005629C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		935140EB22612CAD005629C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		935140F522612E38005629C2 /* InstallerApp2ISO.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = InstallerApp2ISO.sh; sourceTree = SOURCE_ROOT; };
+		935140F522612E38005629C2 /* InstallerApp2ISO.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; lineEnding = 0; path = InstallerApp2ISO.sh; sourceTree = SOURCE_ROOT; usesTabs = 0; };
 		935140F722613010005629C2 /* InstallToISOWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallToISOWindow.swift; sourceTree = "<group>"; };
 		935140FA22613041005629C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/InstallToISOWindow.xib; sourceTree = "<group>"; };
 		935C71792263CA6100D1BE23 /* InstallerApp2ISO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InstallerApp2ISO.entitlements; sourceTree = "<group>"; };

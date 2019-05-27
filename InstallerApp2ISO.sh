@@ -265,9 +265,9 @@ do
             shift;
             ;;
 
-		-y|--yes)
-			MY_IGNOREPROMPT=1;
-			;;
+        -y|--yes)
+            MY_IGNOREPROMPT=1;
+            ;;
 
 #         -c|--checksum)
 #             MY_CHECKSUM=1;
@@ -568,18 +568,18 @@ if [ -f "${MY_DESTDIR}/${MY_OSXVERSION}.iso" -o -f "${MY_TEMPDIR}/${MY_OSXVERSIO
         echo "           -> $MY_TEMPDIR/$MY_OSXVERSION.sparseimage"
     fi
 
-	if [ $MY_IGNOREPROMPT -eq "0" ]; then
-		echo ""
-		echo "*** IF YOU CONTINUE THE FILE(S) WILL BE DELETED! ***"
-		echo ""
-		echo "Continue? (Yes/No)"
-		printf "\a"
+    if [ $MY_IGNOREPROMPT -eq "0" ]; then
+        echo ""
+        echo "*** IF YOU CONTINUE THE FILE(S) WILL BE DELETED! ***"
+        echo ""
+        echo "Continue? (Yes/No)"
+        printf "\a"
 
-		read MY_ANSWER
-		if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
-			echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
-			exit 2;
-		fi
+        read MY_ANSWER
+        if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
+            echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
+            exit 2;
+        fi
     fi
 
     if [ -f "${MY_DESTDIR}/${MY_OSXVERSION}.iso" ]; then
@@ -652,14 +652,14 @@ fi
 echo ""
 
 if [ $MY_IGNOREPROMPT -eq "0" ]; then
-	echo "Continue? (Yes/No)"
-	printf "\a"
+    echo "Continue? (Yes/No)"
+    printf "\a"
 
-	read MY_ANSWER
-	if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
-		echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
-		exit 2;
-	fi
+    read MY_ANSWER
+    if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
+        echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
+        exit 2;
+    fi
 fi
 echo ""
 
@@ -865,7 +865,7 @@ if test "$MY_OSXSCRIPT" = "10.13-10.14" ; then
     fi
     INTERACTION=""
     if [ $MY_IGNOREPROMPT -ne "0" ]; then
-    	INTERACTION="--nointeraction"
+        INTERACTION="--nointeraction"
     fi
 
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
