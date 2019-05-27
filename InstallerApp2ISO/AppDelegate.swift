@@ -48,6 +48,13 @@ extension AppDelegate : NSOpenSavePanelDelegate
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
+
+	override init()
+	{
+		Execute.checkCodeValidity()
+		super.init()
+	}
+
 	var m_windows = Set<InstallToISOWindow>()
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {

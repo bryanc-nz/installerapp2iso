@@ -23,6 +23,33 @@
 import Foundation
 
 class Execute {
+	static func checkCodeValidity()
+	{
+		/*
+			https://eclecticlight.co/2019/05/11/checking-your-apps-own-signature/
+		*/
+
+		let url = Bundle.main.bundleURL
+
+		var staticCode: SecStaticCode? = nil
+		let err = SecStaticCodeCreateWithPath(url as CFURL, [], &staticCode)
+		if err == OSStatus(noErr),
+		   let code = staticCode {
+			//let checkFlags = SecCSFlags(rawValue: kSecCSCheckNestedCode)
+			let checkFlags = SecCSFlags(rawValue: kSecCSStrictValidate | kSecCSCheckNestedCode)
+			let secReq: SecRequirement? = nil
+			var secErr: Unmanaged<CFError>?
+
+			let csErr = SecStaticCodeCheckValidityWithErrors(code, checkFlags, secReq, &secErr)
+			if csErr != errSecSuccess {
+				exit(1)
+			}
+			if secErr != nil {
+				secErr?.release()
+			}
+		}
+	}
+
 	static func closePipe(process: Process?)
 	{
 		guard let proc = process else { return }
