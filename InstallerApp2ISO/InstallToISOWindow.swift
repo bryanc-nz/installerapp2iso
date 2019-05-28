@@ -89,7 +89,7 @@ class InstallToISOWindow : NSWindowController {
 
 	var virtualboxInstalled: Bool {
 		let virtualbox = "/Applications/VirtualBox.app"
-		return FileManager.default.fileExists(atPath: virtualbox)
+		return Files.fileExists(virtualbox)
 	}
 
 	override func windowDidLoad()
@@ -376,13 +376,8 @@ class InstallToISOWindow : NSWindowController {
 
 	func runInstallerToVDI(_ file: String, _ size: Double)
 	{
-		func fileExists(_ path: String) -> Bool
-		{
-			return FileManager.default.fileExists(atPath: path)
-		}
-
 		let filePath = m_output.stringValue + "/" + file + ".vdi"
-		if !fileExists(filePath) {
+		if !Files.fileExists(filePath) {
 			runInstallerToVDIScript(file, size)
 			return
 		}
@@ -422,22 +417,25 @@ class InstallToISOWindow : NSWindowController {
 
 		let env = [String:String]()
 
-		guard let script = Bundle.main.path(forResource: "apfsvdi", ofType: "sh") else { return }
+		chooseScript(forResource: "apfsvdi", ofType: "sh") {
+			[weak self] script in
+			guard let this = self else { return }
 
-		var cmd = "\"" + script + "\""
-		cmd += " -i \"" + m_installer_path + "\""
-		cmd += " -o \"" + m_output.stringValue + "\""
-		cmd += " -t \"" + tmpDirectory() + "\""
-		cmd += " -y"
-		cmd += " --name \"" + name + "\""
-		cmd += " --size \"" + String(format: "%.0f", size + 0.5) + "\""
+			var cmd = "\"" + script + "\""
+			cmd += " -i \"" + this.m_installer_path + "\""
+			cmd += " -o \"" + this.m_output.stringValue + "\""
+			cmd += " -t \"" + this.tmpDirectory() + "\""
+			cmd += " -y"
+			cmd += " --name \"" + name + "\""
+			cmd += " --size \"" + String(format: "%.0f", size + 0.5) + "\""
 
-		if m_verbose.indexOfSelectedItem == 0 {
-			cmd += " -q"
+			if this.m_verbose.indexOfSelectedItem == 0 {
+				cmd += " -q"
+			}
+
+			this.addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
+			this.executeBashScript(cmd: cmd, localenv: env)
 		}
-
-		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
-		executeBashScript(cmd: cmd, localenv: env)
 	}
 
 	func installerToISO()
@@ -450,22 +448,87 @@ class InstallToISOWindow : NSWindowController {
 		let verbosity = m_verbose.indexOfSelectedItem
 		let privhelper = Bundle.main.bundlePath + "/Contents/MacOS/privileged"
 
-		guard let script = Bundle.main.path(forResource: "InstallerApp2ISO", ofType: "sh") else { return }
+		chooseScript(forResource: "InstallerApp2ISO", ofType: "sh") {
+			[weak self] script in
+			guard let this = self else { return }
 		
-		var cmd = "\"" + script + "\""					// absolute path to script
-		cmd += " -i \"" + m_installer_path + "\"" +		// MY_INSTAPP
-			   " -o \"" + m_output.stringValue + "\"" +	// MY_DESTDIR
-			   " -t \"" + tmpDirectory() + "\"" +		// MY_TEMPDIR
-			   " -p \"" + privhelper + "\"" +			// MY_PRIVILEGED
-			   " -y" +									// MY_IGNOREPROMPT
-			   " -v " + String(verbosity)				// MY_VERBOSE
+			var cmd = "\"" + script + "\""					// absolute path to script
+			cmd += " -i \"" + this.m_installer_path + "\"" +		// MY_INSTAPP
+				   " -o \"" + this.m_output.stringValue + "\"" +	// MY_DESTDIR
+				   " -t \"" + this.tmpDirectory() + "\"" +		// MY_TEMPDIR
+				   " -p \"" + privhelper + "\"" +			// MY_PRIVILEGED
+				   " -y" +									// MY_IGNOREPROMPT
+				   " -v " + String(verbosity)				// MY_VERBOSE
 
-		if m_dry_run.integerValue != 0 {
-			cmd += " -d"									// MY_DRYRUN
+			if this.m_dry_run.integerValue != 0 {
+				cmd += " -d"									// MY_DRYRUN
+			}
+
+			this.addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
+			this.executeBashScript(cmd: cmd, localenv: env)
+		}
+	}
+
+	func warnExternalScript(_ external: String, _ original: String, closure: @escaping (String)->Void)
+	{
+		let alert: NSAlert = NSAlert()
+
+		alert.addButton(withTitle: NSLocalizedString("Original", comment: ""))
+		alert.addButton(withTitle: NSLocalizedString("External", comment: ""))
+		alert.addButton(withTitle: NSLocalizedString("Cancel", comment: ""))
+
+		alert.messageText = NSLocalizedString("External script: ", comment: "") + external
+
+		var msg = NSLocalizedString("This is an external script that has not been tested.", comment: "")
+		msg += "\n"
+		msg += "\n"
+		msg += NSLocalizedString("You are running it at your own risk.", comment: "")
+		alert.informativeText = msg
+
+		alert.beginSheetModal(for: window!) {
+			response in
+			switch response {
+			case .alertFirstButtonReturn:
+				closure(original)
+				break
+
+			case .alertSecondButtonReturn:
+				closure(external)
+				break
+
+			case .alertThirdButtonReturn:
+				break
+
+			default:
+				break
+			}
+		}
+	}
+
+	func chooseScript(forResource resource: String, ofType type: String, closure: @escaping (String)->Void)
+	{
+		// see if there's an external version of the script
+		var script: String?
+		if let appsupport = Files.appSupportPath() {
+			let dir = appsupport + "/InstallerApp2ISO"
+
+			let file = dir + "/" + resource + "." + type
+			if Files.fileExists(file) {
+				script = file
+			}
 		}
 
-		addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
-		executeBashScript(cmd: cmd, localenv: env)
+		// get path to the embedded script
+		guard let original = Bundle.main.path(forResource: resource, ofType: type) else { return }
+
+		if script == nil {
+			// no external - execute the embedded
+			closure(original)
+			return
+		}
+
+		// make the user choose
+		warnExternalScript(script!, original, closure: closure)
 	}
 
 	func executeBashScript(cmd: String, localenv: [String : String])

@@ -87,6 +87,12 @@
                                     </items>
                                 </menu>
                             </menuItem>
+                            <menuItem title="Open App Support ..." id="R7S-Qj-AbM">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="openAppSupport:" target="Voe-Tx-rLC" id="wxr-TR-Cyh"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="m54-Is-iLE"/>
                             <menuItem title="Close" keyEquivalent="w" id="DVo-aG-piG">
                                 <connections>

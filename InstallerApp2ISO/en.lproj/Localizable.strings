@@ -17,10 +17,19 @@
 "exists" = "exists";
 
 /* No comment provided by engineer. */
+"External" = "External";
+
+/* No comment provided by engineer. */
+"External script: " = "External script: ";
+
+/* No comment provided by engineer. */
 "File exists" = "File exists";
 
 /* No comment provided by engineer. */
 "File:" = "File:";
+
+/* No comment provided by engineer. */
+"Original" = "Original";
 
 /* No comment provided by engineer. */
 "Overwrite" = "Overwrite";
@@ -29,5 +38,11 @@
 "Press 'Cancel' to abort." = "Press 'Cancel' to abort.";
 
 /* No comment provided by engineer. */
+"This is an external script that has not been tested." = "This is an external script that has not been tested.";
+
+/* No comment provided by engineer. */
 "wants to make changes." = "wants to make changes.";
+
+/* No comment provided by engineer. */
+"You are running it at your own risk." = "You are running it at your own risk.";
 

@@ -24,13 +24,9 @@ import Cocoa
 
 func isValidInstaller(_ path: String) -> Bool
 {
-	func fileExists(_ path: String) -> Bool
-	{
-		return FileManager.default.fileExists(atPath: path)
-	}
 
-	return fileExists(path + "/Contents/version.plist") &&
-		   fileExists(path + "/Contents/SharedSupport/InstallESD.dmg")
+	return Files.fileExists(path + "/Contents/version.plist") &&
+		   Files.fileExists(path + "/Contents/SharedSupport/InstallESD.dmg")
 }
 
 extension AppDelegate : NSOpenSavePanelDelegate
@@ -107,6 +103,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		   let url = dialog.url {
 		   	openWindow(forURL: url)
 			NSDocumentController.shared.noteNewRecentDocumentURL(url)
+		}
+	}
+
+	@IBAction func openAppSupport(_ sender: Any)
+	{
+		if let appsupport = Files.appSupportPath() {
+			let dir = appsupport + "/InstallerApp2ISO"
+			try? FileManager.default.createDirectory(atPath: dir, withIntermediateDirectories: true, attributes: nil)
+			NSWorkspace.shared.open(URL(fileURLWithPath: dir, isDirectory: true))
 		}
 	}
 

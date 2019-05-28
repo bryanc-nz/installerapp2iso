@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		931EBFFF227EEE6F008BA8AB /* VDIParamsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 931EBFFD227EEE6F008BA8AB /* VDIParamsWindow.xib */; };
 		931EC001227EEEA9008BA8AB /* VDIParamsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 931EC000227EEEA9008BA8AB /* VDIParamsWindow.swift */; };
+		931F8B58229C9AE90033DD3D /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 931F8B57229C9AE90033DD3D /* Files.swift */; };
 		935140E522612CAC005629C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935140E422612CAC005629C2 /* AppDelegate.swift */; };
 		935140E722612CAD005629C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 935140E622612CAD005629C2 /* Assets.xcassets */; };
 		935140EA22612CAD005629C2 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 935140E822612CAD005629C2 /* MainMenu.xib */; };
@@ -62,6 +63,7 @@
 		931B95562263D16A00D4BFE8 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ExportOptions.plist; sourceTree = "<group>"; };
 		931EBFFE227EEE6F008BA8AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/VDIParamsWindow.xib; sourceTree = "<group>"; };
 		931EC000227EEEA9008BA8AB /* VDIParamsWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VDIParamsWindow.swift; sourceTree = "<group>"; };
+		931F8B57229C9AE90033DD3D /* Files.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Files.swift; sourceTree = "<group>"; };
 		934A8F4B226309A8007B3201 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		934A8F4C22630AB8007B3201 /* scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = scripts; sourceTree = "<group>"; };
 		935140E122612CAC005629C2 /* InstallerApp2ISO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstallerApp2ISO.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +148,7 @@
 				93FED9EB22613774006A7902 /* DropView.swift */,
 				93FED9ED226138AD006A7902 /* Extensions.swift */,
 				93FED9EF226151A4006A7902 /* Execute.swift */,
+				931F8B57229C9AE90033DD3D /* Files.swift */,
 				931EC000227EEEA9008BA8AB /* VDIParamsWindow.swift */,
 			);
 			name = Source;
@@ -315,6 +318,7 @@
 			files = (
 				935140F822613010005629C2 /* InstallToISOWindow.swift in Sources */,
 				93FED9F0226151A4006A7902 /* Execute.swift in Sources */,
+				931F8B58229C9AE90033DD3D /* Files.swift in Sources */,
 				935140E522612CAC005629C2 /* AppDelegate.swift in Sources */,
 				931EC001227EEEA9008BA8AB /* VDIParamsWindow.swift in Sources */,
 				93FED9EC22613774006A7902 /* DropView.swift in Sources */,
