@@ -36,7 +36,7 @@ clear
 echo "================================================================================"
 echo "Apple OSX Installer Application to ISO creation tool"
 echo "================================================================================"
-echo "Version: 2019-01-04"
+echo "Version: 2019-05-28"
 echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums."
 echo "All rights reserved."
 echo ""
@@ -74,6 +74,16 @@ my_revision()
 {
     echo ""
     echo "Version history:"
+    echo ""
+    echo "  2019-05-28"
+    echo "      - Small fixes for the 3rd party authentication."
+    echo "      - Change the 'if' statements style from 'test' to '[]'."
+    echo ""
+    echo "  2019-05-26 (granada29 version)"
+    echo "      - Added support for up to 10.14.5."
+    echo "      - Incorporated changes by granada29 for authorization/batch processing."
+    echo "      - There is a GUI app by granada29 that encapsulates the script functionality"
+    echo "        https://www.whatroute.net/installerapp2iso.html"
     echo ""
     echo "  2019-01-04"
     echo "      - Added support for 10.14.0, .2 (18C54)."
@@ -136,7 +146,9 @@ my_usage()
     echo "                    [-t|--tmpdir <TempDir>]"
     echo "                    [-v|--verbose <VerboseLevel>]"
     echo "                    [-d|--dry-run]"
+    echo "                    [-p|--privileged <AltSudo>]"
     echo "                    [-x|--OSX <OSXVersion>]"
+    echo "                    [-y|--yes]"
 #    echo "                    [-c|--checksum]"
     echo "                    [-r|--revision]"
     echo "                    [-h|-?|--help]"
@@ -202,7 +214,7 @@ do
     case "$ARG" in
 
         -i|--installer)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --installer argument.";
                 echo "";
                 exit 1;
@@ -212,7 +224,7 @@ do
             ;;
 
         -o|--output)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --output argument.";
                 echo "";
                 exit 1;
@@ -222,7 +234,7 @@ do
             ;;
 
         -t|--tmpdir)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --tmpdir argument.";
                 echo "";
                 exit 1;
@@ -232,7 +244,7 @@ do
             ;;
 
         -v|--verbose)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --verbose argument.";
                 echo "";
                 exit 1;
@@ -242,7 +254,7 @@ do
             ;;
 
         -p|--privileged)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --privileged argument.";
                 echo "";
                 exit 1;
@@ -256,7 +268,7 @@ do
             ;;
 
         -x|--OSX)
-            if test $# -eq 0; then
+            if [ $# -eq 0 ] ; then
                 echo "*** ERROR: missing --OSX argument.";
                 echo "";
                 exit 1;
@@ -490,7 +502,7 @@ if [ $MY_DRYRUN -eq "0" -a "$MY_OSXVERSION" = "" ]; then
         echo "- OSX version: 10.13 or 10.14 InstallerApp detected!"
     fi
 
-    if test "$MY_OSXSCRIPT" = "10.13-10.14" ; then
+    if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
         echo "- OSX version: Testing for 10.13-10.14"
         hdiutil attach "$MY_INSTAPP/Contents/SharedSupport/BaseSystem.dmg" $MY_VERBOSECMD -noverify -nobrowse -mountpoint /Volumes/BaseSystem -quiet
     else
@@ -514,7 +526,7 @@ if [ $MY_DRYRUN -eq "0" -a "$MY_OSXVERSION" = "" ]; then
     sleep 2
 
 # There was an additional mount for < 10.13-10.14, the InstallESD.dmg, eject that as well.
-    if test "$MY_OSXSCRIPT" != "10.13-10.14" ; then
+    if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
         hdiutil detach "/Volumes/InstallESD" $MY_VERBOSECMD -quiet
     fi
 else
@@ -576,7 +588,7 @@ if [ -f "${MY_DESTDIR}/${MY_OSXVERSION}.iso" -o -f "${MY_TEMPDIR}/${MY_OSXVERSIO
         printf "\a"
 
         read MY_ANSWER
-        if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
+        if [ "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y" ] ; then
             echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
             exit 2;
         fi
@@ -611,8 +623,12 @@ echo "    - Verbosity level         : $MY_VERBOSE"
 echo "    - Dry-run cmd. output     : $MY_DRYRUN"
 
 # Check for membership in the "admin" group for the 10.13-10.14 installer
-if test "$MY_OSXSCRIPT" = "10.13-10.14" ; then
-    if id -nG | grep -qw "admin"; then
+# The check will only happen if the authentication is using 'sudo'
+# In any other case, a 3rd party authentication app is used, deal with it in the app.
+if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
+    if [ "$MY_PRIVILEGED" != "sudo" ] ; then
+        echo "    - Admin group membership  : Will be verified."
+    elif id -nG | grep -qw "admin"; then
         echo "    - Admin group membership  : Required and met."
     else
         echo "    - Admin group membership  : *** Required but not met! ***"
@@ -656,7 +672,7 @@ if [ $MY_IGNOREPROMPT -eq "0" ]; then
     printf "\a"
 
     read MY_ANSWER
-    if test "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y"; then
+    if [ "$MY_ANSWER" != "Yes" -a "$MY_ANSWER" != "YES" -a "$MY_ANSWER" != "yes" -a "$MY_ANSWER" != "Y" -a "$MY_ANSWER" != "y" ] ; then
         echo "Aborting app conversion. Your answer was: '$MY_ANSWER')".
         exit 2;
     fi
@@ -686,7 +702,7 @@ fi
 # Mounting the InstallESD. Not needed for 10.13-10.14.x
 # ---------------------------------------------------------------
 
-if test "$MY_OSXSCRIPT" != "10.13-10.14" ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Mount the installer image..."
@@ -713,7 +729,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.8, 10.9, 10.10.
 # ---------------------------------------------------------------
-if test "$MY_OSXSCRIPT" = "10.8-10.10" ; then
+if [ "$MY_OSXSCRIPT" = "10.8-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Convert the boot image to a sparse bundle... (patience is a virtue)"
@@ -745,7 +761,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.11, 10.12, 10.13, 10.14.
 # ---------------------------------------------------------------
-if test "$MY_OSXSCRIPT" != "10.8-10.10" ; then
+if [ "$MY_OSXSCRIPT" != "10.8-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Create $MY_OSXVERSION blank ISO image with a Single Partition - Apple Partition Map..."
@@ -785,7 +801,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.11, 10.12.
 # ---------------------------------------------------------------
-if test "$MY_OSXSCRIPT" = "10.11-10.12" ; then
+if [ "$MY_OSXSCRIPT" = "10.11-10.12" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Restore the Base System into the $MY_OSXVERSION ISO image..."
@@ -810,7 +826,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.8, 10.9, 10.10, 10.11, 10.12.
 # ---------------------------------------------------------------
-if test "$MY_OSXSCRIPT" != "10.13-10.14" ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Remove Package link and replace with actual files... (go get some coffee)"
@@ -857,7 +873,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.13-10.14.
 # ---------------------------------------------------------------
-if test "$MY_OSXSCRIPT" = "10.13-10.14" ; then
+if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Create the installer media..."
@@ -888,7 +904,7 @@ if [ $MY_DRYRUN -eq "0" ]; then
     echo "Unmount the sparse bundle..."
     echo "--------------------------------------------------------------------------------"
 fi
-if test "$MY_OSXSCRIPT" != "10.13-10.14" ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
         echo "hdiutil detach /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD"
     fi
