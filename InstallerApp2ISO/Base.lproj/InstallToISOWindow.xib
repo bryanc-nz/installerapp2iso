@@ -143,7 +143,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="fkl-j3-3JN">
-                        <rect key="frame" x="383" y="153" width="128" height="18"/>
+                        <rect key="frame" x="385" y="153" width="128" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -174,7 +174,7 @@ Gw
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="627" height="104"/>
-                                    <size key="maxSize" width="627" height="10000000"/>
+                                    <size key="maxSize" width="629" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>

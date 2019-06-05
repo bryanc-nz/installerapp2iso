@@ -111,7 +111,7 @@ class InstallToISOWindow : NSWindowController {
 		enableControls()
 
 		// no dry-run - script is broken
-		m_dry_run.isHidden = true
+		m_dry_run.isHidden = false
 		m_dry_run.integerValue = 0
 	}
 
@@ -132,6 +132,9 @@ class InstallToISOWindow : NSWindowController {
 
 		m_choose_action.isEnabled = idle
 		m_perform_action.isEnabled = idle && !m_installer_path.isEmpty
+
+		m_dry_run.isHidden = (selectedAction == .CREATE_VDI)
+		m_dry_run.isEnabled = idle
 
 		if m_perform_action.isEnabled && selectedAction == .CREATE_VDI {
 		 	m_perform_action.isEnabled = apfsInstaller && virtualboxInstalled
@@ -432,8 +435,6 @@ class InstallToISOWindow : NSWindowController {
 			if this.m_verbose.indexOfSelectedItem == 0 {
 				cmd += " -q"
 			}
-
-			this.addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
 			this.executeBashScript(cmd: cmd, localenv: env)
 		}
 	}
@@ -453,18 +454,18 @@ class InstallToISOWindow : NSWindowController {
 			guard let this = self else { return }
 		
 			var cmd = "\"" + script + "\""					// absolute path to script
-			cmd += " -i \"" + this.m_installer_path + "\"" +		// MY_INSTAPP
-				   " -o \"" + this.m_output.stringValue + "\"" +	// MY_DESTDIR
-				   " -t \"" + this.tmpDirectory() + "\"" +		// MY_TEMPDIR
-				   " -p \"" + privhelper + "\"" +			// MY_PRIVILEGED
-				   " -y" +									// MY_IGNOREPROMPT
-				   " -v " + String(verbosity)				// MY_VERBOSE
 
 			if this.m_dry_run.integerValue != 0 {
-				cmd += " -d"									// MY_DRYRUN
+				cmd += " -d"										// MY_DRYRUN
 			}
+			cmd += " -i \"" + this.m_installer_path + "\"" +		// MY_INSTAPP
+				   " -o \"" + this.m_output.stringValue + "\"" +	// MY_DESTDIR
+				   " -t \"" + this.tmpDirectory() + "\"" +			// MY_TEMPDIR
+				   " -p \"" + privhelper + "\"" +					// MY_PRIVILEGED
+				   " -y" +											// MY_IGNOREPROMPT
+				   " -v " + String(verbosity)						// MY_VERBOSE
 
-			this.addText(NSLocalizedString("Command: ", comment: "") + cmd + "\n")
+
 			this.executeBashScript(cmd: cmd, localenv: env)
 		}
 	}
@@ -533,6 +534,8 @@ class InstallToISOWindow : NSWindowController {
 
 	func executeBashScript(cmd: String, localenv: [String : String])
 	{
+		addText(NSLocalizedString("Command", comment: "") + ": " + cmd + "\n")
+
 		let args = ["-c", cmd]
 
 		var env = ProcessInfo.processInfo.environment

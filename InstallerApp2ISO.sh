@@ -36,7 +36,7 @@ clear
 echo "================================================================================"
 echo "Apple OSX Installer Application to ISO creation tool"
 echo "================================================================================"
-echo "Version: 2019-05-28"
+echo "Version: 2019-06-05"
 echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums."
 echo "All rights reserved."
 echo ""
@@ -75,15 +75,21 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
+    echo "  2019-06-05"
+    echo "      - Added support for up to 10.15.beta and beyond."
+    echo "      - When using the dry-run simply check for the existence of the installer."
+    echo "        Do not check for the available free space or the output/temp directory,"
+    echo "        since no actual conversion will take place."
+    echo ""
     echo "  2019-05-28"
     echo "      - Small fixes for the 3rd party authentication."
     echo "      - Change the 'if' statements style from 'test' to '[]'."
     echo ""
     echo "  2019-05-26 (granada29 version)"
-    echo "      - Added support for up to 10.14.5."
-    echo "      - Incorporated changes by granada29 for authorization/batch processing."
     echo "      - There is a GUI app by granada29 that encapsulates the script functionality"
     echo "        https://www.whatroute.net/installerapp2iso.html"
+    echo "      - Incorporated changes by granada29 for authorization/batch processing."
+    echo "      - Added support for up to 10.14.5."
     echo ""
     echo "  2019-01-04"
     echo "      - Added support for 10.14.0, .2 (18C54)."
@@ -180,7 +186,7 @@ my_usage()
     echo "-p|--privileged Command to use if 'sudo' is not available"
     echo ""
     echo "-x|--OSX        OSXVersion can be one of the following strings:"
-    echo "                '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', or '10.14'."
+    echo "                '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', 10.15."
     echo "                You should use it in case that the OSX version cannot be"
     echo "                determined automatically, *OR* if you're running a dry run."
     echo ""
@@ -345,22 +351,19 @@ fi
 # Remove the trailing /, if any.
 MY_INSTAPP=${MY_INSTAPP%/}
 
-# Skip the checks if we're simply dry-running the script
-if [ $MY_DRYRUN -eq "0" ]; then
-    if ! [ -d "${MY_INSTAPP}" ]; then
-        echo "*** ERROR: OSX InstallerApp does not exist:"
-        echo "           -> $MY_INSTAPP";
-        echo "";
-        exit 1;
-    fi
+if ! [ -d "${MY_INSTAPP}" ]; then
+    echo "*** ERROR: OSX InstallerApp does not exist, or you don't have read access:"
+    echo "           -> $MY_INSTAPP";
+    echo "";
+    exit 1;
+fi
 
-    if ! [ -f "${MY_INSTAPP}/Contents/version.plist" -a -f  "${MY_INSTAPP}/Contents/SharedSupport/InstallESD.dmg" ]; then
-        echo "*** ERROR: The provided application is NOT a valid OSX InstallerApp:"
-        echo "           -> $MY_INSTAPP";
-        echo "           -> ${MY_INSTAPP}/Contents/SharedSupport/InstallESD.dmg file not found!";
-        echo "";
-        exit 1;
-    fi
+if ! [ -f "${MY_INSTAPP}/Contents/version.plist" -a -f  "${MY_INSTAPP}/Contents/SharedSupport/InstallESD.dmg" ]; then
+    echo "*** ERROR: The provided application is NOT a valid OSX InstallerApp:"
+    echo "           -> $MY_INSTAPP";
+    echo "           -> ${MY_INSTAPP}/Contents/SharedSupport/InstallESD.dmg file not found!";
+    echo "";
+    exit 1;
 fi
 
 
@@ -422,7 +425,7 @@ if [ "$MY_TEMPDIR" == "" ]; then
     exit 1;
 fi
 
-if [ "$MY_TEMPDIR" = "`(cd $TMPDIR; pwd)`" ]; then
+if [ "$MY_TEMPDIR" == "`(cd $TMPDIR; pwd)`" ]; then
     echo "*** ERROR: The temporary directory is the same as the system directory."
     echo "           This will definitely lead to errors. You should change it."
     echo "           We suggest using /tmp"
@@ -488,7 +491,7 @@ esac
 # Check OSX version.
 # http://loefflmann.blogspot.gr/2015/03/finding-os-x-version-and-build-in-install-os-x-app.html
 # ---------------------------------------------------------------
-if [ $MY_DRYRUN -eq "0" -a "$MY_OSXVERSION" = "" ]; then
+if [ "$MY_OSXVERSION" == "" ]; then
     echo "- OSX version: attempting automatic OSX detection from the InstallerApp...";
 
 
@@ -498,12 +501,12 @@ if [ $MY_DRYRUN -eq "0" -a "$MY_OSXVERSION" = "" ]; then
 # the conversion will fail later down the road.
 
     if [ -f "${MY_INSTAPP}/Contents/SharedSupport/BaseSystem.dmg" ]; then
-        MY_OSXSCRIPT="10.13-10.14"
-        echo "- OSX version: 10.13 or 10.14 InstallerApp detected!"
+        MY_OSXSCRIPT="10.13-10.15"
+        echo "- OSX version: 10.13, 10.14 or 10.15 InstallerApp detected!"
     fi
 
-    if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
-        echo "- OSX version: Testing for 10.13-10.14"
+    if [ "$MY_OSXSCRIPT" == "10.13-10.15" ] ; then
+        echo "- OSX version: Testing for 10.13-10.15"
         hdiutil attach "$MY_INSTAPP/Contents/SharedSupport/BaseSystem.dmg" $MY_VERBOSECMD -noverify -nobrowse -mountpoint /Volumes/BaseSystem -quiet
     else
         echo "- OSX version: Testing for 10.8, 10.9, 10.10, 10.11, 10.12"
@@ -525,8 +528,8 @@ if [ $MY_DRYRUN -eq "0" -a "$MY_OSXVERSION" = "" ]; then
     hdiutil detach "/Volumes/BaseSystem" $MY_VERBOSECMD -quiet
     sleep 2
 
-# There was an additional mount for < 10.13-10.14, the InstallESD.dmg, eject that as well.
-    if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
+# There was an additional mount for < 10.13-10.15, the InstallESD.dmg, eject that as well.
+    if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
         hdiutil detach "/Volumes/InstallESD" $MY_VERBOSECMD -quiet
     fi
 else
@@ -554,9 +557,11 @@ case $MY_OSXVERSION in
     10.12|10.12.1|10.12.2|10.12.3|10.12.4|10.12.5|10.12.6)
         MY_OSXSCRIPT="10.11-10.12";;
     10.13|10.13.1|10.13.2|10.13.3|10.13.4|10.13.5|10.13.6)
-        MY_OSXSCRIPT="10.13-10.14";;
+        MY_OSXSCRIPT="10.13-10.15";;
     10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5)
-        MY_OSXSCRIPT="10.13-10.14";;
+        MY_OSXSCRIPT="10.13-10.15";;
+    10.15)
+        MY_OSXSCRIPT="10.13-10.15";;
     *)
         echo "*** ERROR: Invalid OSX version specified: $MY_OSXVERSION";
         echo "           You need to rerun the script with an appropriate --OSX switch.";
@@ -622,10 +627,10 @@ echo "    - Verbosity level         : $MY_VERBOSE"
 # echo "    - Calculate ISO checksum  : $MY_CHECKSUM"
 echo "    - Dry-run cmd. output     : $MY_DRYRUN"
 
-# Check for membership in the "admin" group for the 10.13-10.14 installer
+# Check for membership in the "admin" group for the 10.13-10.15 installer
 # The check will only happen if the authentication is using 'sudo'
 # In any other case, a 3rd party authentication app is used, deal with it in the app.
-if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
+if [ "$MY_OSXSCRIPT" == "10.13-10.15" ] ; then
     if [ "$MY_PRIVILEGED" != "sudo" ] ; then
         echo "    - Admin group membership  : Will be verified."
     elif id -nG | grep -qw "admin"; then
@@ -636,7 +641,7 @@ if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
         if [ $MY_DRYRUN -eq "0" ]; then
             echo "************************   I M P O R T A N T   ************************"
             echo "\"$USER\" does *not* belong to the admin group, conversion can *not*"
-            echo "proceed. The 10.13-10.14.x conversion requires the use of \`sudo\`,"
+            echo "proceed. The 10.13-10.15.x conversion requires the use of \`sudo\`,"
             echo "something only available to users belonging to the 'admin' group."
             echo ""
             echo "Run again the script as a user that belongs in the admin group,"
@@ -645,7 +650,7 @@ if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
             exit 1;
         fi
     fi
-# No admin required if not 10.13-10.14
+# No admin required if not 10.13-10.15
 else
     echo "    - Admin group membership  : Not required"
 fi
@@ -699,10 +704,10 @@ fi
 
 # ---------------------------------------------------------------
 # The actual conversion scripts.
-# Mounting the InstallESD. Not needed for 10.13-10.14.x
+# Mounting the InstallESD. Not needed for 10.13-10.15.x
 # ---------------------------------------------------------------
 
-if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Mount the installer image..."
@@ -729,7 +734,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.8, 10.9, 10.10.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" = "10.8-10.10" ] ; then
+if [ "$MY_OSXSCRIPT" == "10.8-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Convert the boot image to a sparse bundle... (patience is a virtue)"
@@ -759,7 +764,7 @@ fi
 
 
 # ---------------------------------------------------------------
-# Conditional for 10.11, 10.12, 10.13, 10.14.
+# Conditional for 10.11, 10.12, 10.13, 10.14, 10.15.
 # ---------------------------------------------------------------
 if [ "$MY_OSXSCRIPT" != "10.8-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
@@ -775,7 +780,7 @@ if [ "$MY_OSXSCRIPT" != "10.8-10.10" ] ; then
     fi
 fi
 # ---------------------------------------------------------------
-# End of conditional for 10.11, 10.12, 10.13, 10.14.
+# End of conditional for 10.11, 10.12, 10.13, 10.14, 10.15.
 
 
 
@@ -801,7 +806,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.11, 10.12.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" = "10.11-10.12" ] ; then
+if [ "$MY_OSXSCRIPT" == "10.11-10.12" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Restore the Base System into the $MY_OSXVERSION ISO image..."
@@ -826,7 +831,7 @@ fi
 # ---------------------------------------------------------------
 # Conditional for 10.8, 10.9, 10.10, 10.11, 10.12.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Remove Package link and replace with actual files... (go get some coffee)"
@@ -871,9 +876,9 @@ fi
 # End of conditional for 10.8, 10.9, 10.10, 10.11, 10.12.
 
 # ---------------------------------------------------------------
-# Conditional for 10.13-10.14.
+# Conditional for 10.13-10.15.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" = "10.13-10.14" ] ; then
+if [ "$MY_OSXSCRIPT" == "10.13-10.15" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Create the installer media..."
@@ -904,7 +909,7 @@ if [ $MY_DRYRUN -eq "0" ]; then
     echo "Unmount the sparse bundle..."
     echo "--------------------------------------------------------------------------------"
 fi
-if [ "$MY_OSXSCRIPT" != "10.13-10.14" ] ; then
+if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
         echo "hdiutil detach /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD"
     fi

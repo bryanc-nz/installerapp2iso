@@ -47,7 +47,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 	override init()
 	{
+		#if !DEBUG
 		Execute.checkCodeValidity()
+		#endif
 		super.init()
 	}
 

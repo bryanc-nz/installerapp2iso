@@ -126,7 +126,7 @@ make_sparse()
 	DEVICE=$(cat "$volumes"|awk '/GUID_partition_scheme/ { print $1 }')
 	EFI_DEV=$(cat "$volumes"|awk '/EFI/ { print $1 }')
 
-	if [ x"DEVICE" == "x" ]; then
+	if [ x"$DEVICE" == "x" ]; then
 		errorcheck 1 "$sparse is not a GUID disk."
 	fi
 
@@ -455,11 +455,11 @@ get_options()
 	fi
 
 	showprogress "DESTDIR: $DESTDIR"
-	local required=$SIZE
-	if [ $SHOWPROGRESS -ne 0 ]; then
-		required=$(($SIZE * 2))
-	fi
-	check_disk_space "$DESTDIR" $required
+	#local required=$SIZE
+	#if [ $SHOWPROGRESS -ne 0 ]; then
+	#	required=$(($SIZE * 2))
+	#fi
+	#check_disk_space "$DESTDIR" $required
 
 	local prefix=$(basename -s .app "$INSTALLERAPP")
 
@@ -476,7 +476,7 @@ get_options()
 		errorcheck 1 "Temporary directory is missing: $TMPDIR"
 	fi
 	showprogress "TMPDIR: $TMPDIR"
-	check_disk_space "$TMPDIR" $SIZE
+	#check_disk_space "$TMPDIR" $SIZE
 }
 
 mount_base_system()
@@ -493,7 +493,7 @@ mount_base_system()
 	# Mount the base system and find the path to the APFS boot driver
 	#
 	BASEMOUNT="$(hdiutil attach "$base_system" | awk -F '\t' '/Apple_HFS/ {print $3}')"
-	if [ x"BASEMOUNT" == "x" ]; then
+	if [ x"$BASEMOUNT" == "x" ]; then
 		errorcheck 1 "Cannot attach Base System Image: $base_system"
 	fi
 
