@@ -1,4 +1,7 @@
 /* No comment provided by engineer. */
+"A newer version of" = "A newer version of";
+
+/* No comment provided by engineer. */
 "Cancel" = "Cancel";
 
 /* No comment provided by engineer. */
@@ -14,6 +17,9 @@
 "Command" = "Command";
 
 /* No comment provided by engineer. */
+"Download" = "Download";
+
+/* No comment provided by engineer. */
 "exists" = "exists";
 
 /* No comment provided by engineer. */
@@ -27,6 +33,18 @@
 
 /* No comment provided by engineer. */
 "File:" = "File:";
+
+/* No comment provided by engineer. */
+"Ignore" = "Ignore";
+
+/* No comment provided by engineer. */
+"is available." = "is available.";
+
+/* No comment provided by engineer. */
+"Never" = "Never";
+
+/* No comment provided by engineer. */
+"Newer version" = "Newer version";
 
 /* No comment provided by engineer. */
 "Original" = "Original";
@@ -45,4 +63,7 @@
 
 /* No comment provided by engineer. */
 "You are running it at your own risk." = "You are running it at your own risk.";
+
+/* No comment provided by engineer. */
+"You have version" = "You have version";
 

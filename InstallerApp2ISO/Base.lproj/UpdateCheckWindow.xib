@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" customObjectInstantitationMethod="direct">
+    <dependencies>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="UpdateCheckWindow" customModule="InstallerApp2ISO" customModuleProvider="target">
+            <connections>
+                <outlet property="m_autocheck" destination="cM4-QS-sQr" id="y8y-Si-rcF"/>
+                <outlet property="m_available" destination="zia-GH-z4C" id="aRW-r7-oju"/>
+                <outlet property="m_frequency" destination="JZw-fb-5Xs" id="enV-Pe-ELI"/>
+                <outlet property="m_heading" destination="eEr-TT-WOO" id="oVj-HJ-Lq9"/>
+                <outlet property="m_installed" destination="zfi-Lx-JCx" id="Y3a-hM-P3i"/>
+                <outlet property="m_lastchecked" destination="Qkn-mK-3WW" id="za1-DL-aT6"/>
+                <outlet property="window" destination="QvC-M9-y7g" id="jyC-Fq-wkg"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
+        <window title="Check For Updates" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="CheckForUpdates" animationBehavior="default" id="QvC-M9-y7g">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES"/>
+            <rect key="contentRect" x="1103" y="680" width="480" height="270"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
+            <value key="minSize" type="size" width="480" height="270"/>
+            <value key="maxSize" type="size" width="480" height="270"/>
+            <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
+                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="Y6T-YX-8am">
+                        <rect key="frame" x="20" y="186" width="64" height="64"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" image="AppIcon" id="z9A-6E-3um"/>
+                    </imageView>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="dTe-Jn-5vi">
+                        <rect key="frame" x="90" y="233" width="204" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Check for the latest version of" id="3pC-ZO-W21">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <box borderType="line" titlePosition="noTitle" id="7Jr-5Q-NeG">
+                        <rect key="frame" x="17" y="16" width="446" height="156"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <view key="contentView" id="hP1-0n-CXX">
+                            <rect key="frame" x="3" y="3" width="440" height="150"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="AYY-R1-V2F">
+                                    <rect key="frame" x="18" y="111" width="162" height="17"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Last checked:" id="UoK-p0-sN5">
+                                        <font key="font" usesAppearanceFont="YES"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Qkn-mK-3WW">
+                                    <rect key="frame" x="184" y="111" width="236" height="17"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <textFieldCell key="cell" lineBreakMode="clipping" title="date/time" id="TDr-HM-rWN">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <button verticalHuggingPriority="750" id="wlt-F8-H6a">
+                                    <rect key="frame" x="166" y="68" width="107" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="push" title="Check now" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="GzW-IS-yKW">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="checkNow:" target="-2" id="yXE-Vp-j1O"/>
+                                    </connections>
+                                </button>
+                                <popUpButton verticalHuggingPriority="750" id="JZw-fb-5Xs">
+                                    <rect key="frame" x="170" y="19" width="100" height="25"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <popUpButtonCell key="cell" type="push" title="Hourly" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="PXF-ss-gM2" id="TNf-Zm-gwo">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="menu"/>
+                                        <menu key="menu" id="QJE-8W-NN8">
+                                            <items>
+                                                <menuItem title="Hourly" state="on" id="PXF-ss-gM2"/>
+                                                <menuItem title="Daily" id="aU2-N5-dnM"/>
+                                                <menuItem title="Weekly" id="Z9F-wX-Z66"/>
+                                                <menuItem title="Monthly" id="w0x-73-qWc"/>
+                                            </items>
+                                        </menu>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <action selector="changeFrequency:" target="-2" id="gWV-2p-t6U"/>
+                                    </connections>
+                                </popUpButton>
+                                <button verticalHuggingPriority="750" id="cM4-QS-sQr">
+                                    <rect key="frame" x="111" y="49" width="216" height="18"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <buttonCell key="cell" type="check" title="Automatic check for Updates" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="jpA-Ah-DIR">
+                                        <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="autoCheck:" target="-2" id="QpU-KW-Ks7"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </view>
+                    </box>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="eEr-TT-WOO">
+                        <rect key="frame" x="295" y="233" width="167" height="17"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="fbO-9J-8eJ">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="OpJ-4h-y0Y">
+                        <rect key="frame" x="90" y="209" width="181" height="14"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" alignment="right" title="Installed version:" id="DkD-ll-dcm">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="x5A-Ju-FzP">
+                        <rect key="frame" x="90" y="187" width="181" height="14"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" alignment="right" title="Available version:" id="NzK-qS-YbX">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zfi-Lx-JCx">
+                        <rect key="frame" x="275" y="209" width="187" height="14"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" title="Label" id="thU-bA-EII">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="zia-GH-z4C">
+                        <rect key="frame" x="275" y="187" width="187" height="14"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" title="Label" id="m4b-lU-MSP">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                </subviews>
+            </view>
+            <connections>
+                <outlet property="delegate" destination="-2" id="avN-qO-ohO"/>
+            </connections>
+        </window>
+    </objects>
+    <resources>
+        <image name="AppIcon" width="128" height="128"/>
+    </resources>
+</document>

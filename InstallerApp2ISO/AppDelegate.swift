@@ -57,11 +57,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 	func applicationDidFinishLaunching(_ aNotification: Notification) {
 		// Insert code here to initialize your application
+		UpdateCheck.shared.setup(version: "https://www.whatroute.net/installerapp2isoversion.plist",
+								    site:"https://www.whatroute.net/installerapp2iso.html#download")
+								    
+		UpdateCheck.shared.startChecker()
 		newWindow("")
 	}
 
 	func applicationWillTerminate(_ aNotification: Notification) {
 		// Insert code here to tear down your application
+		UpdateCheck.shared.stopChecker()
 	}
 
 	func applicationShouldTerminateAfterLastWindowClosed(_ theApplication: NSApplication) -> Bool
@@ -106,6 +111,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 		   	openWindow(forURL: url)
 			NSDocumentController.shared.noteNewRecentDocumentURL(url)
 		}
+	}
+
+	@IBAction func checkForUpdate(_ sender: Any)
+	{
+		var wind = UpdateCheckWindow.instance
+		if wind == nil {
+			wind = UpdateCheckWindow(windowNibName: "UpdateCheckWindow")
+		}
+		wind?.showWindow(self)
 	}
 
 	@IBAction func openAppSupport(_ sender: Any)

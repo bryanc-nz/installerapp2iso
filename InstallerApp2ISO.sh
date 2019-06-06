@@ -381,6 +381,9 @@ if [ "$MY_DESTDIR" == "" ]; then
     exit 1;
 fi
 
+# Get the available free space on the destination.
+MY_DESTFREE=`(df "$MY_DESTDIR" | awk 'NR>1 {print $4}')`
+MY_DESTFREE=$[ MY_DESTFREE/2/1024/1024 ];
 
 # Skip the checks if we're simply dry-running the script
 if [ $MY_DRYRUN -eq "0" ]; then
@@ -399,8 +402,6 @@ if [ $MY_DRYRUN -eq "0" ]; then
     fi
 
     # Check for available free space on the destination.
-    MY_DESTFREE=`(df "$MY_DESTDIR" | awk 'NR>1 {print $4}')`
-    MY_DESTFREE=$[ MY_DESTFREE/2/1024/1024 ];
     if [ $MY_DESTFREE -lt 15 ]; then
         echo "*** ERROR: Not enough free space in destination directory:"
         echo "           -> $MY_DESTDIR";
@@ -433,6 +434,10 @@ if [ "$MY_TEMPDIR" == "`(cd $TMPDIR; pwd)`" ]; then
     exit 1;
 fi
 
+# Get available free space on the temp directory.
+MY_TEMPFREE=`(df "$MY_TEMPDIR" | awk 'NR>1 {print $4}')`
+MY_TEMPFREE=$[ MY_TEMPFREE/2/1024/1024 ];
+
 # Skip the checks if we're simply dry-running the script
 if [ $MY_DRYRUN -eq "0" ]; then
     if ! [ -d "${MY_TEMPDIR}" ]; then
@@ -450,8 +455,6 @@ if [ $MY_DRYRUN -eq "0" ]; then
     fi
 
     # Check for available free space on the temp directory.
-    MY_TEMPFREE=`(df "$MY_TEMPDIR" | awk 'NR>1 {print $4}')`
-    MY_TEMPFREE=$[ MY_TEMPFREE/2/1024/1024 ];
     if [ $MY_TEMPFREE -lt 15 ]; then
         echo "*** ERROR: Not enough free space in temporary directory:"
         echo "           -> $MY_TEMPDIR";

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9300AC3122A86CE500DDA287 /* UpdateCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9300AC3022A86CE500DDA287 /* UpdateCheck.swift */; };
 		931EBFFF227EEE6F008BA8AB /* VDIParamsWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 931EBFFD227EEE6F008BA8AB /* VDIParamsWindow.xib */; };
 		931EC001227EEEA9008BA8AB /* VDIParamsWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 931EC000227EEEA9008BA8AB /* VDIParamsWindow.swift */; };
 		931F8B58229C9AE90033DD3D /* Files.swift in Sources */ = {isa = PBXBuildFile; fileRef = 931F8B57229C9AE90033DD3D /* Files.swift */; };
@@ -20,6 +21,7 @@
 		936C576F2261F93E00477B05 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 936C576E2261F93E00477B05 /* main.c */; };
 		936C57752261F99700477B05 /* privileged.c in Sources */ = {isa = PBXBuildFile; fileRef = 936C57732261F99700477B05 /* privileged.c */; };
 		936C57792261FAAD00477B05 /* privileged in CopyFiles */ = {isa = PBXBuildFile; fileRef = 936C576C2261F93E00477B05 /* privileged */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		93C6876422A8C09D0038140E /* UpdateCheckWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93C6876222A8C09D0038140E /* UpdateCheckWindow.xib */; };
 		93CF8AD622795AF600CFD097 /* apfsvdi.sh in Resources */ = {isa = PBXBuildFile; fileRef = 93CF8AD522795AF600CFD097 /* apfsvdi.sh */; };
 		93FED9EC22613774006A7902 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FED9EB22613774006A7902 /* DropView.swift */; };
 		93FED9EE226138AD006A7902 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FED9ED226138AD006A7902 /* Extensions.swift */; };
@@ -59,6 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9300AC3022A86CE500DDA287 /* UpdateCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateCheck.swift; sourceTree = "<group>"; };
 		9313853E22719F90004DDD2A /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		931B95562263D16A00D4BFE8 /* ExportOptions.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ExportOptions.plist; sourceTree = "<group>"; };
 		931EBFFE227EEE6F008BA8AB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/VDIParamsWindow.xib; sourceTree = "<group>"; };
@@ -83,6 +86,7 @@
 		936C57742261F99700477B05 /* privileged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privileged.h; sourceTree = "<group>"; };
 		93AB51D6226FB55900B0B13A /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		93AB51D7226FB57100B0B13A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		93C6876322A8C09D0038140E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UpdateCheckWindow.xib; sourceTree = "<group>"; };
 		93CF8AD522795AF600CFD097 /* apfsvdi.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = apfsvdi.sh; sourceTree = SOURCE_ROOT; };
 		93FED9EB22613774006A7902 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 		93FED9ED226138AD006A7902 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -136,6 +140,7 @@
 				935140F322612D89005629C2 /* Interface */,
 				935140F422612DB2005629C2 /* Resources */,
 				935140F222612D68005629C2 /* Source */,
+				93C6876122A8C0380038140E /* UpdateCheck */,
 			);
 			path = InstallerApp2ISO;
 			sourceTree = "<group>";
@@ -186,6 +191,15 @@
 				936C57742261F99700477B05 /* privileged.h */,
 			);
 			path = privileged;
+			sourceTree = "<group>";
+		};
+		93C6876122A8C0380038140E /* UpdateCheck */ = {
+			isa = PBXGroup;
+			children = (
+				9300AC3022A86CE500DDA287 /* UpdateCheck.swift */,
+				93C6876222A8C09D0038140E /* UpdateCheckWindow.xib */,
+			);
+			name = UpdateCheck;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -285,6 +299,7 @@
 				93CF8AD622795AF600CFD097 /* apfsvdi.sh in Resources */,
 				931EBFFF227EEE6F008BA8AB /* VDIParamsWindow.xib in Resources */,
 				935140F622612E38005629C2 /* InstallerApp2ISO.sh in Resources */,
+				93C6876422A8C09D0038140E /* UpdateCheckWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +336,7 @@
 				931F8B58229C9AE90033DD3D /* Files.swift in Sources */,
 				935140E522612CAC005629C2 /* AppDelegate.swift in Sources */,
 				931EC001227EEEA9008BA8AB /* VDIParamsWindow.swift in Sources */,
+				9300AC3122A86CE500DDA287 /* UpdateCheck.swift in Sources */,
 				93FED9EC22613774006A7902 /* DropView.swift in Sources */,
 				93FED9EE226138AD006A7902 /* Extensions.swift in Sources */,
 			);
@@ -377,6 +393,14 @@
 				935C71802263CDD600D1BE23 /* en */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		93C6876222A8C09D0038140E /* UpdateCheckWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				93C6876322A8C09D0038140E /* Base */,
+			);
+			name = UpdateCheckWindow.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

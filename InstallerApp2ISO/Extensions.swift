@@ -40,6 +40,15 @@ public extension String {
 		}
 		return lines
 	}
+
+	func split(_ chars: String = " \n\r\t", _ removeEmpty: Bool = true) -> [String]?
+	{
+		let text = self.trim()
+		let charset = CharacterSet(charactersIn: chars)
+		let ret = text.components(separatedBy: charset).filter { removeEmpty ? !$0.isEmpty : true }
+
+		return ret
+	}
 }
 
 public extension NSTextView {
@@ -75,17 +84,28 @@ public extension Process {
 }
 
 public extension Bundle {
+	static func plistinfo(_ key: String) -> String
+	{
+		if let bundle = CFBundleGetMainBundle(),
+		   let val = CFBundleGetValueForInfoDictionaryKey(bundle, key as CFString?) as? String {
+			return val
+		}
+		return ""
+	}
+
+	static func appName() -> String
+	{
+		return plistinfo("CFBundleName")
+	}
+
+	static func appVersion() -> String
+	{
+		let version = plistinfo("CFBundleShortVersionString")
+		return version
+	}
+
 	static func appVersionName() -> String
 	{
-		func plistinfo(_ key: String) -> String
-		{
-			if let bundle = CFBundleGetMainBundle(),
-			   let val = CFBundleGetValueForInfoDictionaryKey(bundle, key as CFString?) as? String {
-				return val
-			}
-			return ""
-		}
-
 		let name			= plistinfo("CFBundleName")
 		let shortversion	= plistinfo("CFBundleShortVersionString")
 		let version			= plistinfo("CFBundleVersion")

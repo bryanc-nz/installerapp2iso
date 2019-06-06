@@ -27,6 +27,12 @@
                                 </connections>
                             </menuItem>
                             <menuItem isSeparatorItem="YES" id="VOq-y0-SEH"/>
+                            <menuItem title="Check for update ..." id="ZS6-77-2rc">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="checkForUpdate:" target="Voe-Tx-rLC" id="pEe-Yu-5Z7"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Preferences…" keyEquivalent="," id="BOF-NM-1cW"/>
                             <menuItem isSeparatorItem="YES" id="wFC-TO-SCJ"/>
                             <menuItem title="Services" id="NMo-om-nkz">
