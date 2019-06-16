@@ -75,6 +75,9 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
+    echo "  2019-06-09"
+    echo "      - Added support for 10.7"
+    echo ""
     echo "  2019-06-05"
     echo "      - Added support for up to 10.15.beta and beyond."
     echo "      - When using the dry-run simply check for the existence of the installer."
@@ -186,7 +189,7 @@ my_usage()
     echo "-p|--privileged Command to use if 'sudo' is not available"
     echo ""
     echo "-x|--OSX        OSXVersion can be one of the following strings:"
-    echo "                '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', 10.15."
+    echo "                '10.7', '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', 10.15."
     echo "                You should use it in case that the OSX version cannot be"
     echo "                determined automatically, *OR* if you're running a dry run."
     echo ""
@@ -512,7 +515,7 @@ if [ "$MY_OSXVERSION" == "" ]; then
         echo "- OSX version: Testing for 10.13-10.15"
         hdiutil attach "$MY_INSTAPP/Contents/SharedSupport/BaseSystem.dmg" $MY_VERBOSECMD -noverify -nobrowse -mountpoint /Volumes/BaseSystem -quiet
     else
-        echo "- OSX version: Testing for 10.8, 10.9, 10.10, 10.11, 10.12"
+        echo "- OSX version: Testing for 10.7, 10.8, 10.9, 10.10, 10.11, 10.12"
         hdiutil attach "$MY_INSTAPP/Contents/SharedSupport/InstallESD.dmg" $MY_VERBOSECMD -noverify -nobrowse -mountpoint /Volumes/InstallESD -quiet
         hdiutil attach "/Volumes/InstallESD/BaseSystem.dmg" $MY_VERBOSECMD -noverify -nobrowse -mountpoint /Volumes/BaseSystem -quiet
     fi
@@ -548,13 +551,15 @@ case $MY_OSXVERSION in
         echo "*** ERROR: OSX version could not be determined."
         echo "           You need to rerun the script and specify the --OSX switch.";
         my_usage 1;
-        ;;        
+        ;;
+    10.7)
+        MY_OSXSCRIPT="10.7-10.10";;
     10.8|10.8.1|10.8.2|10.8.3|10.8.4|10.8.5)
-        MY_OSXSCRIPT="10.8-10.10";;
+        MY_OSXSCRIPT="10.7-10.10";;
     10.9|10.9.1|10.9.2|10.9.3|10.9.4|10.9.5)
-        MY_OSXSCRIPT="10.8-10.10";;
+        MY_OSXSCRIPT="10.7-10.10";;
     10.10|10.10.1|10.10.2|10.10.3|10.10.4|10.10.5)
-        MY_OSXSCRIPT="10.8-10.10";;
+        MY_OSXSCRIPT="10.7-10.10";;
     10.11|10.11.1|10.11.2|10.11.3|10.11.4|10.11.5|10.11.6)
         MY_OSXSCRIPT="10.11-10.12";;
     10.12|10.12.1|10.12.2|10.12.3|10.12.4|10.12.5|10.12.6)
@@ -735,9 +740,9 @@ fi
 # ***************************************************************
 
 # ---------------------------------------------------------------
-# Conditional for 10.8, 10.9, 10.10.
+# Conditional for 10.7, 10.8, 10.9, 10.10.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" == "10.8-10.10" ] ; then
+if [ "$MY_OSXSCRIPT" == "10.7-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Convert the boot image to a sparse bundle... (patience is a virtue)"
@@ -763,13 +768,13 @@ if [ "$MY_OSXSCRIPT" == "10.8-10.10" ] ; then
     fi
 fi
 # ---------------------------------------------------------------
-# End of conditional for 10.8, 10.9, 10.10.
+# End of conditional for 10.7, 10.8, 10.9, 10.10.
 
 
 # ---------------------------------------------------------------
 # Conditional for 10.11, 10.12, 10.13, 10.14, 10.15.
 # ---------------------------------------------------------------
-if [ "$MY_OSXSCRIPT" != "10.8-10.10" ] ; then
+if [ "$MY_OSXSCRIPT" != "10.7-10.10" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
         echo ""
         echo "Create $MY_OSXVERSION blank ISO image with a Single Partition - Apple Partition Map..."
@@ -832,7 +837,7 @@ fi
 
 
 # ---------------------------------------------------------------
-# Conditional for 10.8, 10.9, 10.10, 10.11, 10.12.
+# Conditional for 10.7, 10.8, 10.9, 10.10, 10.11, 10.12.
 # ---------------------------------------------------------------
 if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     if [ $MY_DRYRUN -eq "0" ]; then
@@ -876,7 +881,7 @@ if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     fi
 fi
 # ---------------------------------------------------------------
-# End of conditional for 10.8, 10.9, 10.10, 10.11, 10.12.
+# End of conditional for 10.7, 10.8, 10.9, 10.10, 10.11, 10.12.
 
 # ---------------------------------------------------------------
 # Conditional for 10.13-10.15.
