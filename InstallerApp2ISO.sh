@@ -75,6 +75,9 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
+    echo "  2019-07-29"
+    echo "      - Added support for 10.14.6"
+    echo ""
     echo "  2019-06-09"
     echo "      - Added support for 10.7"
     echo ""
@@ -566,7 +569,7 @@ case $MY_OSXVERSION in
         MY_OSXSCRIPT="10.11-10.12";;
     10.13|10.13.1|10.13.2|10.13.3|10.13.4|10.13.5|10.13.6)
         MY_OSXSCRIPT="10.13-10.15";;
-    10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5)
+    10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5|10.14.6)
         MY_OSXSCRIPT="10.13-10.15";;
     10.15)
         MY_OSXSCRIPT="10.13-10.15";;
