@@ -51,6 +51,16 @@ public extension String {
 	}
 }
 
+public class SubTextView : NSTextView {
+	override open func changeFont(_ sender: Any?)
+	{
+		let canEdit = self.isEditable
+		self.isEditable = true
+		super.changeFont(sender)
+		self.isEditable = canEdit
+	}
+}
+
 public extension NSTextView {
 	func scrollToStart()
 	{

@@ -52,7 +52,7 @@ class InstallToISOWindow : NSWindowController {
 	@IBOutlet weak var m_output_choose: NSButton!
 	@IBOutlet weak var m_show_in_finder: NSButton!
 
-	var m_text: NSTextView! { return m_scrollview?.textView }
+	var m_text: SubTextView! { return m_scrollview?.textView as? SubTextView }
 
 	var m_proc: Process!
 	var m_installer_path = ""
