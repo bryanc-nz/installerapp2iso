@@ -30,20 +30,6 @@ set -o pipefail
 
 
 # ---------------------------------------------------------------
-# Display a simple welcome message first after clearing the screen.
-# ---------------------------------------------------------------
-clear
-echo "================================================================================"
-echo "Apple OSX Installer Application to ISO creation tool"
-echo "================================================================================"
-echo "Version: 2019-06-05"
-echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums."
-echo "All rights reserved."
-echo ""
-
-
-
-# ---------------------------------------------------------------
 # Setup some global variables.
 # ---------------------------------------------------------------
 MY_INSTAPP=""
@@ -68,6 +54,20 @@ MY_COMMAND="$0"
 
 
 # ---------------------------------------------------------------
+# Display a simple welcome message first after clearing the screen.
+# ---------------------------------------------------------------
+clear
+echo "================================================================================"
+echo "Apple OSX Installer Application to ISO creation tool"
+echo "================================================================================"
+echo "Version: 2019-08-25"
+echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums."
+echo "All rights reserved."
+echo ""
+
+
+
+# ---------------------------------------------------------------
 # Version history
 # ---------------------------------------------------------------
 my_revision()
@@ -75,11 +75,9 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
-    echo "  2019-07-29"
-    echo "      - Added support for 10.14.6"
-    echo ""
-    echo "  2019-06-09"
-    echo "      - Added support for 10.7"
+    echo "  2019-08-25"
+    echo "      - Added support for 10.14.6."
+    echo "      - Added support for 10.7."
     echo ""
     echo "  2019-06-05"
     echo "      - Added support for up to 10.15.beta and beyond."
@@ -192,7 +190,8 @@ my_usage()
     echo "-p|--privileged Command to use if 'sudo' is not available"
     echo ""
     echo "-x|--OSX        OSXVersion can be one of the following strings:"
-    echo "                '10.7', '10.8', '10.9', '10.10', '10.11', '10.12', '10.13', '10.14', 10.15."
+    echo "                '10.7', '10.8', '10.9', '10.10', '10.11', '10.12', '10.13',"
+    echo "                '10.14', '10.15'."
     echo "                You should use it in case that the OSX version cannot be"
     echo "                determined automatically, *OR* if you're running a dry run."
     echo ""
@@ -555,7 +554,7 @@ case $MY_OSXVERSION in
         echo "           You need to rerun the script and specify the --OSX switch.";
         my_usage 1;
         ;;
-    10.7)
+    10.7|10.7.1|10.7.2|10.7.3|10.7.4|10.7.5)
         MY_OSXSCRIPT="10.7-10.10";;
     10.8|10.8.1|10.8.2|10.8.3|10.8.4|10.8.5)
         MY_OSXSCRIPT="10.7-10.10";;
