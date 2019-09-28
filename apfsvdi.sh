@@ -72,6 +72,9 @@ TMPIMG=""
 TMPVDI=""
 IGNOREPROMPT=0
 
+VBOXMANAGE=/Applications/VirtualBox.app/Contents/MacOS/VBoxManage
+VBOXIMGMOUNT=/Applications/VirtualBox.app/Contents/MacOS/vboximg-mount
+
 my_usage()
 {
     echo ""
@@ -224,7 +227,7 @@ make_vdi()
 	rm -f "$TMPVDI"
 
 	if [ $SHOWPROGRESS -eq 0 ]; then
-		/usr/local/bin/VBoxManage convertfromraw "$rawdevice" "$TMPVDI" --format VDI
+		"$VBOXMANAGE" convertfromraw "$rawdevice" "$TMPVDI" --format VDI
 	else
 		local imgfile="$TMPDIR"/"$VDINAME".img
 		touch "$imgfile"
@@ -238,7 +241,7 @@ make_vdi()
 		local start_time="$(date -u +%s)"
 		{
 			dd if="$rawdevice" bs=65536 2> /dev/null | tee "$imgfile" | \
-			/usr/local/bin/VBoxManage convertfromraw stdin "$TMPVDI" $imgsize --format VDI
+			"$VBOXMANAGE" convertfromraw stdin "$TMPVDI" $imgsize --format VDI
 		}&
 		pid=$!
 
@@ -558,8 +561,8 @@ run_make_vdi()
 	## convert the sparseimage disk to a VirtualBox .vdi file
 	make_vdi "$DEVICE" "$vdi"
 
-	if [ -e /usr/local/bin/vboximg-mount ]; then
-		/usr/local/bin/vboximg-mount -l -i "$vdi"
+	if [ -e "$VBOXIMGMOUNT" ]; then
+		"$VBOXIMGMOUNT" -l -i "$vdi"
 	fi
 
 	echo "--> Created VDI file: $vdi"
@@ -575,7 +578,7 @@ exitfunc()
 trap 'exitfunc' TERM
 trap 'exitfunc' EXIT
 
-if [ ! -e /usr/local/bin/VBoxManage ]; then
+if [ ! -e "$VBOXMANAGE" ]; then
 	errorcheck 1 "Please install VirtualBox (https://www.virtualbox.org/) before running."
 fi
 
