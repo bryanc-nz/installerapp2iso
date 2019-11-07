@@ -116,13 +116,15 @@ make_sparse()
 	#
 	# Create a sparse bundle - it will be converted to the VDI file
 	#
-	rm -rf $sparse
-	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs APFS -volname "Macintosh HD" -size $SIZE"g" "$sparse"
+	rm -rf "$sparse"
+	showprogress hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs \"JHFS+\" -volname \"Macintosh HD\" -size $SIZE"g" \"$sparse\"
+	hdiutil create -layout GPTSPUD -type SPARSEBUNDLE -fs "JHFS+" -volname "Macintosh HD" -size $SIZE"g" "$sparse"
 	errorcheck $? "Cannot create sparse bundle:  $sparse"
 
 	#
 	# attach the sparse bundle and get the device ids for the file systems
 	#
+	showprogress hdiutil attach \"$sparse\" -nomount > \"$volumes\"
 	hdiutil attach "$sparse" -nomount > "$volumes"
 	errorcheck $? "Cannot attach $sparse"
 
@@ -151,10 +153,20 @@ make_efi()
 {
 	local efi_dev="$1"
 	local driver="$2"
+	local trys=0
 
-	if [ ! -f "$driver" ]; then
-		errorcheck 1 "Cannot locate driver: $driver"
-	fi
+	while [ 1 ]; do
+		trys=$(($trys+1))
+		if [ ! -f "$driver" ]; then
+			if [ $trys -eq 10 ]; then
+				errorcheck 1 "Cannot locate driver: $driver"
+			fi
+			showprogress "waiting for: $driver"
+			sleep 1
+		else
+			break
+		fi
+	done
 
 	local quiet="quiet"
 	if [ $SHOWPROGRESS -ne 0 ]; then
@@ -164,7 +176,8 @@ make_efi()
 	#
 	# Add the required entries to the EFI file system
 	#
-	diskutil $quiet mount $efi_dev
+	showprogress diskutil $quiet mount \"$efi_dev\"
+	diskutil $quiet mount "$efi_dev"
 	errorcheck $? "Cannot mount EFI device: $efi_dev"
 
 	#
@@ -185,7 +198,7 @@ make_efi()
 	#
 	showprogress "Add script 'startup.nsh' to '/Volumes/EFI/'"
 
-	cat <<EOT > /Volumes/EFI/startup.nsh
+	cat <<EOF > /Volumes/EFI/startup.nsh
 @echo -off
 #fixme startup delay
 set StartupDelay 0
@@ -203,7 +216,7 @@ for %p in "macOS Install Data" "macOS Install Data\Locked Files\Boot Files" "OS 
   endfor
 endfor
 echo "Failed."
-EOT
+EOF
 
 	diskutil $quiet unmount $efi_dev
 }
@@ -227,6 +240,7 @@ make_vdi()
 	rm -f "$TMPVDI"
 
 	if [ $SHOWPROGRESS -eq 0 ]; then
+		echo \"$VBOXMANAGE\" convertfromraw \"$rawdevice\" \"$TMPVDI\" --format VDI
 		"$VBOXMANAGE" convertfromraw "$rawdevice" "$TMPVDI" --format VDI
 	else
 		local imgfile="$TMPDIR"/"$VDINAME".img
@@ -495,6 +509,7 @@ mount_base_system()
 	#
 	# Mount the base system and find the path to the APFS boot driver
 	#
+	showprogress hdiutil attach \"$base_system\" \| awk -F '\t' '/Apple_HFS/ {print $3}'
 	BASEMOUNT="$(hdiutil attach "$base_system" | awk -F '\t' '/Apple_HFS/ {print $3}')"
 	if [ x"$BASEMOUNT" == "x" ]; then
 		errorcheck 1 "Cannot attach Base System Image: $base_system"
