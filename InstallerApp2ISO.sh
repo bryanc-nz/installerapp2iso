@@ -903,7 +903,7 @@ if [ "$MY_OSXSCRIPT" == "10.13-10.15" ] ; then
         echo "$MY_PRIVILEGED \"$MY_INSTAPP/Contents/Resources/createinstallmedia\" $INTERACTION --volume /Volumes/OS\ X\ Base\ System"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
-        $MY_PRIVILEGED "$MY_INSTAPP/Contents/Resources/createinstallmedia" $INTERACTION --volume /Volumes/OS\ X\ Base\ System
+        "$MY_PRIVILEGED" "$MY_INSTAPP/Contents/Resources/createinstallmedia" $INTERACTION --volume /Volumes/OS\ X\ Base\ System
     fi
 fi
 
