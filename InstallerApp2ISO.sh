@@ -15,8 +15,8 @@
 # ---------------------------------------------------------------
 # Clean up our mess from previously failed attempts.
 # ---------------------------------------------------------------
-hdiutil detach /Volumes/Install* -quiet
-hdiutil detach /Volumes/OS\ X\ Base\ System -quiet
+hdiutil detach -force /Volumes/Install* -quiet
+hdiutil detach -force /Volumes/OS\ X\ Base\ System -quiet
 
 
 
@@ -533,12 +533,12 @@ if [ "$MY_OSXVERSION" == "" ]; then
     echo "- OSX version detected: $MY_OSXVERSION ($MY_OSXBUILD)"
 
 # Eject the BaseSystem.dmg mount
-    hdiutil detach "/Volumes/BaseSystem" $MY_VERBOSECMD -quiet
+    hdiutil detach -force "/Volumes/BaseSystem" $MY_VERBOSECMD -quiet
     sleep 2
 
 # There was an additional mount for < 10.13-10.15, the InstallESD.dmg, eject that as well.
     if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
-        hdiutil detach "/Volumes/InstallESD" $MY_VERBOSECMD -quiet
+        hdiutil detach -force "/Volumes/InstallESD" $MY_VERBOSECMD -quiet
     fi
 else
     MY_OSXBUILD="* MANUAL *"
@@ -876,10 +876,10 @@ if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
         echo "--------------------------------------------------------------------------------"
     fi
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
-        echo "hdiutil detach /Volumes/InstallESD $MY_VERBOSECMD"
+        echo "hdiutil detach -force /Volumes/InstallESD $MY_VERBOSECMD"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
-              hdiutil detach /Volumes/InstallESD $MY_VERBOSECMD
+              hdiutil detach -force /Volumes/InstallESD $MY_VERBOSECMD
     fi
 fi
 # ---------------------------------------------------------------
@@ -921,19 +921,19 @@ if [ $MY_DRYRUN -eq "0" ]; then
 fi
 if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
-        echo "hdiutil detach /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD"
+        echo "hdiutil detach -force /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
-              hdiutil detach /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD
+              hdiutil detach -force /Volumes/OS\ X\ Base\ System $MY_VERBOSECMD
     fi
 else
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
-#       echo "hdiutil detach /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD"
-        echo "hdiutil detach /Volumes/Install*"
+#       echo "hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD"
+        echo "hdiutil detach -force /Volumes/Install*"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
-#             hdiutil detach /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD
-              hdiutil detach /Volumes/Install*
+#             hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD
+              hdiutil detach -force /Volumes/Install*
     fi
 fi
 
