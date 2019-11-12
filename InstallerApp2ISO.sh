@@ -929,10 +929,12 @@ if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
 else
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
 #       echo "hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD"
+        echo "mdutil -i off /Volumes/Install*"
         echo "hdiutil detach -force /Volumes/Install*"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
 #             hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD
+              mdutil -v -i off /Volumes/Install*
               hdiutil detach -force /Volumes/Install*
     fi
 fi
