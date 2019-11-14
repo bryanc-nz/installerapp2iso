@@ -516,6 +516,21 @@ mount_base_system()
 	fi
 
 	showprogress "$base_system mounted at $BASEMOUNT"
+
+	#
+	# disable indexing of the mounted image
+	#
+	while [ 1 ]
+	do
+		showprogress mdutil -v -i off \"$BASEMOUNT\"
+		mdutil -v -i off "$BASEMOUNT"
+		local rc=$?
+		if [ $rc -eq 0 ]; then
+			break
+		else
+			sleep 1
+		fi
+	done
 }
 
 cleanup()
