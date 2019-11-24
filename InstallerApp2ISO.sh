@@ -75,7 +75,8 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
-    echo "  2019-11-13 (granada29 version)"
+    echo "  2019-11-24 (granada29 version)"
+    echo "      - Added support for 10.15.1, 10.15.2 and beyond."
     echo "      - Disable Spotlight before unmounting sparse image"
     echo ""
     echo "  2019-08-25"
@@ -573,7 +574,7 @@ case $MY_OSXVERSION in
         MY_OSXSCRIPT="10.13-10.15";;
     10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5|10.14.6)
         MY_OSXSCRIPT="10.13-10.15";;
-    10.15)
+    10.15|10.15.1|10.15.2)
         MY_OSXSCRIPT="10.13-10.15";;
     *)
         echo "*** ERROR: Invalid OSX version specified: $MY_OSXVERSION";
