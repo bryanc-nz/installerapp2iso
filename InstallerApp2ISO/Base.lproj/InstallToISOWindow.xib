@@ -28,11 +28,11 @@
         <window title="Installer App To ISO" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" frameAutosaveName="InstallerAppToISO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="1092" y="724" width="627" height="256"/>
+            <rect key="contentRect" x="1092" y="724" width="659" height="256"/>
             <rect key="screenRect" x="0.0" y="0.0" width="2560" height="1417"/>
-            <value key="minSize" type="size" width="627" height="256"/>
+            <value key="minSize" type="size" width="659" height="256"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="627" height="256"/>
+                <rect key="frame" x="0.0" y="0.0" width="659" height="256"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="c9e-zE-v9M" customClass="DropView" customModule="InstallerApp2ISO" customModuleProvider="target">
@@ -44,13 +44,13 @@
                         <rect key="frame" x="29" y="176" width="104" height="48"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" controlSize="small" alignment="center" placeholderString="Drop Installer File" id="nkK-fc-Hoq">
-                            <font key="font" metaFont="message" size="11"/>
+                            <font key="font" metaFont="toolTip"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="YF7-Yg-CgC">
-                        <rect key="frame" x="239" y="219" width="370" height="17"/>
+                        <rect key="frame" x="239" y="219" width="407" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" placeholderString="macOS Installer App name" id="j5v-HL-S40">
                             <font key="font" metaFont="system"/>
@@ -73,7 +73,7 @@ Gw
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" id="pMq-Ey-Etj">
-                        <rect key="frame" x="239" y="150" width="120" height="25"/>
+                        <rect key="frame" x="239" y="150" width="152" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Quiet" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="yoS-1Z-V9A" id="O5X-QZ-dMn">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -118,7 +118,7 @@ Gw
                         </textFieldCell>
                     </textField>
                     <comboBox verticalHuggingPriority="750" id="NJD-jy-3rR">
-                        <rect key="frame" x="241" y="183" width="329" height="26"/>
+                        <rect key="frame" x="241" y="183" width="366" height="26"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <comboBoxCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" completes="NO" numberOfVisibleItems="5" id="vMc-D9-j8r">
                             <font key="font" metaFont="system"/>
@@ -132,7 +132,7 @@ Gw
                         </comboBoxCell>
                     </comboBox>
                     <button verticalHuggingPriority="750" id="jaF-4y-8G4">
-                        <rect key="frame" x="570" y="180" width="44" height="32"/>
+                        <rect key="frame" x="609" y="180" width="44" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" bezelStyle="rounded" image="NSFolder" imagePosition="only" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="NcR-Uq-Uz3">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -143,7 +143,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="fkl-j3-3JN">
-                        <rect key="frame" x="363" y="153" width="223" height="18"/>
+                        <rect key="frame" x="395" y="153" width="206" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -151,7 +151,7 @@ Gw
                         </buttonCell>
                     </button>
                     <button verticalHuggingPriority="750" id="4SC-Pw-3dQ">
-                        <rect key="frame" x="455" y="110" width="166" height="32"/>
+                        <rect key="frame" x="487" y="110" width="166" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Show in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0bc-Fv-Hfp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -162,34 +162,34 @@ Gw
                         </connections>
                     </button>
                     <scrollView horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" id="yTK-xD-dgd">
-                        <rect key="frame" x="-1" y="-1" width="629" height="106"/>
+                        <rect key="frame" x="-1" y="-1" width="661" height="106"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" copiesOnScroll="NO" id="gAK-t0-5Fa">
-                            <rect key="frame" x="1" y="1" width="627" height="104"/>
+                            <rect key="frame" x="1" y="1" width="659" height="104"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" usesFontPanel="YES" findStyle="panel" incrementalSearchingEnabled="YES" id="4CV-Ax-v6T" customClass="SubTextView" customModule="InstallerApp2ISO" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="627" height="104"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="659" height="104"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <size key="minSize" width="627" height="104"/>
-                                    <size key="maxSize" width="629" height="10000000"/>
+                                    <size key="minSize" width="659" height="104"/>
+                                    <size key="maxSize" width="661" height="10000000"/>
                                     <color key="insertionPointColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                 </textView>
                             </subviews>
                         </clipView>
                         <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="J9B-mY-eF8">
-                            <rect key="frame" x="1" y="89" width="627" height="16"/>
+                            <rect key="frame" x="1" y="89" width="659" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="mPL-uN-Sn0">
-                            <rect key="frame" x="612" y="1" width="16" height="104"/>
+                            <rect key="frame" x="644" y="1" width="16" height="104"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
                     <button verticalHuggingPriority="750" id="6Kd-v2-mAB">
-                        <rect key="frame" x="359" y="110" width="100" height="32"/>
+                        <rect key="frame" x="391" y="110" width="100" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" image="ISO" imagePosition="left" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="je1-2c-wHj">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -200,7 +200,7 @@ Gw
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" id="dOc-7o-xPO">
-                        <rect key="frame" x="239" y="114" width="120" height="25"/>
+                        <rect key="frame" x="239" y="114" width="152" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Create ISO" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="M8s-8C-eNU" id="lGk-CH-9MG">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -217,7 +217,7 @@ Gw
                         </connections>
                     </popUpButton>
                     <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="r6x-g7-syf">
-                        <rect key="frame" x="592" y="153" width="16" height="16"/>
+                        <rect key="frame" x="624" y="153" width="16" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     </progressIndicator>
                 </subviews>
