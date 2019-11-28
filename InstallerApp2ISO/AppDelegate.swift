@@ -47,9 +47,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
 	override init()
 	{
+		if #available(macOS 10.10, *) {
 		#if !DEBUG
-		Execute.checkCodeValidity()
+			Execute.checkCodeValidity()
 		#endif
+		}
 		super.init()
 	}
 
