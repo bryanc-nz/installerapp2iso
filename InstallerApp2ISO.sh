@@ -2,7 +2,8 @@
 #
 # Script to create an ISO from the Apple application installers.
 #
-# Copyright (C) 2017-2018, socratis @ VirtualBox forums.
+# Copyright (C) 2017-2019, socratis @ VirtualBox forums,
+#          with help from granada29 @ VirtualBox forums.
 #
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License (GPL) as published
@@ -60,8 +61,9 @@ clear
 echo "================================================================================"
 echo "Apple OSX Installer Application to ISO creation tool"
 echo "================================================================================"
-echo "Version: 2019-08-25"
-echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums."
+echo "Version: 2019-11-27"
+echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums,"
+echo "         with help from granada29 @ VirtualBox forums."
 echo "All rights reserved."
 echo ""
 
@@ -75,9 +77,10 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
-    echo "  2019-11-24 (granada29 version)"
-    echo "      - Added support for 10.15.1, 10.15.2 and beyond."
-    echo "      - Disable Spotlight before unmounting sparse image"
+    echo "  2019-11-27"
+    echo "      - Added support for 10.15.1, 10.15.2."
+    echo "      - Disable Spotlight before unmounting sparse image."
+    echo "      - Fixed an issue when running administrator tasks from within the app."
     echo ""
     echo "  2019-08-25"
     echo "      - Added support for 10.14.6."
@@ -932,12 +935,10 @@ if [ "$MY_OSXSCRIPT" != "10.13-10.15" ] ; then
     fi
 else
     if [ $MY_VERBOSE -ge "2" -o $MY_DRYRUN -ne "0" ]; then
-#       echo "hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD"
         echo "mdutil -i off /Volumes/Install*"
         echo "hdiutil detach -force /Volumes/Install*"
     fi
     if [ $MY_DRYRUN -eq "0" ]; then
-#             hdiutil detach -force /Volumes/Install\ macOS\ High\ Sierra $MY_VERBOSECMD
               mdutil -v -i off /Volumes/Install*
               hdiutil detach -force /Volumes/Install*
     fi
