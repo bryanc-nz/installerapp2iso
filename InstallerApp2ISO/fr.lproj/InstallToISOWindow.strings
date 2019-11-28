@@ -1,0 +1,57 @@
+/* Class = "NSButtonCell"; title = "Show in Finder"; ObjectID = "0bc-Fv-Hfp"; */
+"0bc-Fv-Hfp.title" = "Afficher dans le Finder";
+
+/* Class = "NSMenuItem"; title = "All messages"; ObjectID = "Bu9-4b-v79"; */
+"Bu9-4b-v79.title" = "Tous les messages";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "D6G-C1-UXx"; */
+"D6G-C1-UXx.title" = "Annuler";
+
+/* Class = "NSMenuItem"; title = "Create APFS VDI"; ObjectID = "fhN-op-V1x"; */
+"fhN-op-V1x.title" = "Créer le VDI APFS";
+
+/* Class = "NSTextFieldCell"; placeholderString = "macOS Installer App name"; ObjectID = "j5v-HL-S40"; */
+"j5v-HL-S40.placeholderString" = "Nom de l’application installeur macOS";
+
+/* Class = "NSButtonCell"; title = "Go"; ObjectID = "je1-2c-wHj"; */
+"je1-2c-wHj.title" = "Allons-y";
+
+/* Class = "NSMenuItem"; title = "Create ISO"; ObjectID = "M8s-8C-eNU"; */
+"M8s-8C-eNU.title" = "Créer l’ISO";
+
+/* Class = "NSTextFieldCell"; title = "Log Detail:"; ObjectID = "mE1-55-M5L"; */
+"mE1-55-M5L.title" = "Détails :";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Drop Installer File"; ObjectID = "nkK-fc-Hoq"; */
+"nkK-fc-Hoq.placeholderString" = "Supprimer le fichier installeur";
+
+/* Class = "NSTextFieldCell"; title = "Output:"; ObjectID = "NUW-rX-Sgg"; */
+"NUW-rX-Sgg.title" = "Sortie :";
+
+/* Class = "NSButtonCell"; title = "\"Dry\" run"; ObjectID = "pWH-gU-eFh"; */
+"pWH-gU-eFh.title" = "Test à blanc";
+
+/* Class = "NSMenuItem"; title = "Default"; ObjectID = "QhB-ce-Jax"; */
+"QhB-ce-Jax.title" = "Prédéfini";
+
+/* Class = "NSWindow"; title = "Installer App To ISO"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Installeur App vers ISO";
+
+/* Class = "NSMenuItem"; title = "Commands"; ObjectID = "UXn-pH-Q7R"; */
+"UXn-pH-Q7R.title" = "Commandes";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[0] = "Item 1"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[0]" = "Item 1";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[1] = "Item 2"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[1]" = "Item 2";
+
+/* Class = "NSComboBoxCell"; vMc-D9-j8r.ibShadowedObjectValues[2] = "Item 3"; ObjectID = "vMc-D9-j8r"; */
+"vMc-D9-j8r.ibShadowedObjectValues[2]" = "Item 3";
+
+/* Class = "NSTextFieldCell"; title = "Installer:"; ObjectID = "WnM-i8-lrC"; */
+"WnM-i8-lrC.title" = "Installeur :";
+
+/* Class = "NSMenuItem"; title = "Quiet"; ObjectID = "yoS-1Z-V9A"; */
+"yoS-1Z-V9A.title" = "Discret";
+

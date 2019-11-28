@@ -21,6 +21,7 @@
 		936C576F2261F93E00477B05 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 936C576E2261F93E00477B05 /* main.c */; };
 		936C57752261F99700477B05 /* privileged.c in Sources */ = {isa = PBXBuildFile; fileRef = 936C57732261F99700477B05 /* privileged.c */; };
 		936C57792261FAAD00477B05 /* privileged in CopyFiles */ = {isa = PBXBuildFile; fileRef = 936C576C2261F93E00477B05 /* privileged */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		93A9B8F7238E808100BD6064 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 93A9B8F5238E808100BD6064 /* InfoPlist.strings */; };
 		93C6876422A8C09D0038140E /* UpdateCheckWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 93C6876222A8C09D0038140E /* UpdateCheckWindow.xib */; };
 		93CF8AD622795AF600CFD097 /* apfsvdi.sh in Resources */ = {isa = PBXBuildFile; fileRef = 93CF8AD522795AF600CFD097 /* apfsvdi.sh */; };
 		93FED9EC22613774006A7902 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93FED9EB22613774006A7902 /* DropView.swift */; };
@@ -79,10 +80,16 @@
 		935140FA22613041005629C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/InstallToISOWindow.xib; sourceTree = "<group>"; };
 		935C71792263CA6100D1BE23 /* InstallerApp2ISO.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InstallerApp2ISO.entitlements; sourceTree = "<group>"; };
 		935C71802263CDD600D1BE23 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		93688AF9238E338300C6FBE8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/MainMenu.strings; sourceTree = "<group>"; };
+		93688AFA238E338300C6FBE8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InstallToISOWindow.strings; sourceTree = "<group>"; };
+		93688AFB238E338300C6FBE8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/VDIParamsWindow.strings; sourceTree = "<group>"; };
+		93688AFC238E338300C6FBE8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/UpdateCheckWindow.strings; sourceTree = "<group>"; };
+		93688AFD238E338300C6FBE8 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		936C576C2261F93E00477B05 /* privileged */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = privileged; sourceTree = BUILT_PRODUCTS_DIR; };
 		936C576E2261F93E00477B05 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		936C57732261F99700477B05 /* privileged.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = privileged.c; sourceTree = "<group>"; };
 		936C57742261F99700477B05 /* privileged.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = privileged.h; sourceTree = "<group>"; };
+		93A9B8F6238E808100BD6064 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		93AB51D6226FB55900B0B13A /* LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
 		93AB51D7226FB57100B0B13A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		93C6876322A8C09D0038140E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/UpdateCheckWindow.xib; sourceTree = "<group>"; };
@@ -175,6 +182,7 @@
 				935C71792263CA6100D1BE23 /* InstallerApp2ISO.entitlements */,
 				935140E622612CAD005629C2 /* Assets.xcassets */,
 				935140EB22612CAD005629C2 /* Info.plist */,
+				93A9B8F5238E808100BD6064 /* InfoPlist.strings */,
 				93CF8AD522795AF600CFD097 /* apfsvdi.sh */,
 				935140F522612E38005629C2 /* InstallerApp2ISO.sh */,
 				935C717F2263CDD600D1BE23 /* Localizable.strings */,
@@ -274,6 +282,7 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
 			);
 			mainGroup = 935140D822612CAC005629C2;
 			productRefGroup = 935140E222612CAC005629C2 /* Products */;
@@ -298,6 +307,7 @@
 				93CF8AD622795AF600CFD097 /* apfsvdi.sh in Resources */,
 				931EBFFF227EEE6F008BA8AB /* VDIParamsWindow.xib in Resources */,
 				935140F622612E38005629C2 /* InstallerApp2ISO.sh in Resources */,
+				93A9B8F7238E808100BD6064 /* InfoPlist.strings in Resources */,
 				93C6876422A8C09D0038140E /* UpdateCheckWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,6 +375,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				931EBFFE227EEE6F008BA8AB /* Base */,
+				93688AFB238E338300C6FBE8 /* fr */,
 			);
 			name = VDIParamsWindow.xib;
 			sourceTree = "<group>";
@@ -373,6 +384,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				935140E922612CAD005629C2 /* Base */,
+				93688AF9238E338300C6FBE8 /* fr */,
 			);
 			name = MainMenu.xib;
 			sourceTree = "<group>";
@@ -381,6 +393,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				935140FA22613041005629C2 /* Base */,
+				93688AFA238E338300C6FBE8 /* fr */,
 			);
 			name = InstallToISOWindow.xib;
 			sourceTree = "<group>";
@@ -389,14 +402,24 @@
 			isa = PBXVariantGroup;
 			children = (
 				935C71802263CDD600D1BE23 /* en */,
+				93688AFD238E338300C6FBE8 /* fr */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		93A9B8F5238E808100BD6064 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				93A9B8F6238E808100BD6064 /* fr */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		93C6876222A8C09D0038140E /* UpdateCheckWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				93C6876322A8C09D0038140E /* Base */,
+				93688AFC238E338300C6FBE8 /* fr */,
 			);
 			name = UpdateCheckWindow.xib;
 			sourceTree = "<group>";
@@ -408,6 +431,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -469,6 +493,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";

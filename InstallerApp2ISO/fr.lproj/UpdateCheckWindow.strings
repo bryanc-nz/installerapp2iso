@@ -1,0 +1,45 @@
+/* Class = "NSTextFieldCell"; title = "Check for the latest version of"; ObjectID = "3pC-ZO-W21"; */
+"3pC-ZO-W21.title" = "Relever la dernière version de";
+
+/* Class = "NSMenuItem"; title = "Daily"; ObjectID = "aU2-N5-dnM"; */
+"aU2-N5-dnM.title" = "Tous les jours";
+
+/* Class = "NSTextFieldCell"; title = "Installed version:"; ObjectID = "DkD-ll-dcm"; */
+"DkD-ll-dcm.title" = "Version installée :";
+
+/* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "fbO-9J-8eJ"; */
+"fbO-9J-8eJ.title" = "Label";
+
+/* Class = "NSButtonCell"; title = "Check now"; ObjectID = "GzW-IS-yKW"; */
+"GzW-IS-yKW.title" = "Relever maintenant";
+
+/* Class = "NSButtonCell"; title = "Automatic check for Updates"; ObjectID = "jpA-Ah-DIR"; */
+"jpA-Ah-DIR.title" = "Relever automatiquement les mises à jour";
+
+/* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "m4b-lU-MSP"; */
+"m4b-lU-MSP.title" = "Label";
+
+/* Class = "NSTextFieldCell"; title = "Available version:"; ObjectID = "NzK-qS-YbX"; */
+"NzK-qS-YbX.title" = "Version disponible :";
+
+/* Class = "NSMenuItem"; title = "Hourly"; ObjectID = "PXF-ss-gM2"; */
+"PXF-ss-gM2.title" = "Toutes les heures";
+
+/* Class = "NSWindow"; title = "Check For Updates"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Relever les mises à jour";
+
+/* Class = "NSTextFieldCell"; title = "date/time"; ObjectID = "TDr-HM-rWN"; */
+"TDr-HM-rWN.title" = "date/heure";
+
+/* Class = "NSTextFieldCell"; title = "Label"; ObjectID = "thU-bA-EII"; */
+"thU-bA-EII.title" = "Label";
+
+/* Class = "NSTextFieldCell"; title = "Last checked:"; ObjectID = "UoK-p0-sN5"; */
+"UoK-p0-sN5.title" = "Dernière relève :";
+
+/* Class = "NSMenuItem"; title = "Monthly"; ObjectID = "w0x-73-qWc"; */
+"w0x-73-qWc.title" = "Tous les mois";
+
+/* Class = "NSMenuItem"; title = "Weekly"; ObjectID = "Z9F-wX-Z66"; */
+"Z9F-wX-Z66.title" = "Toutes les semaines";
+

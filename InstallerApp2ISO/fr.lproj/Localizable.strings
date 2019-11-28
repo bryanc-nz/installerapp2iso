@@ -1,0 +1,69 @@
+/* No comment provided by engineer. */
+"A newer version of" = "Une nouvelle version de";
+
+/* No comment provided by engineer. */
+"Cancel" = "Annuler";
+
+/* No comment provided by engineer. */
+"CANCELLED by user" = "ANNULÉ par l’utilisateur";
+
+/* No comment provided by engineer. */
+"Choose a macOS Installer" = "Sélectionner un installeur macOS";
+
+/* No comment provided by engineer. */
+"Choose Output Folder" = "Sélectionner le dossier de sortie";
+
+/* No comment provided by engineer. */
+"Command" = "Commande";
+
+/* No comment provided by engineer. */
+"Download" = "Ramener";
+
+/* No comment provided by engineer. */
+"exists" = "existe";
+
+/* No comment provided by engineer. */
+"External" = "Externe";
+
+/* No comment provided by engineer. */
+"External script: " = "Script externe : ";
+
+/* No comment provided by engineer. */
+"File exists" = "Le fichier existe";
+
+/* No comment provided by engineer. */
+"File:" = "Fichier :";
+
+/* No comment provided by engineer. */
+"Ignore" = "Ignorer";
+
+/* No comment provided by engineer. */
+"is available." = "est disponible";
+
+/* No comment provided by engineer. */
+"Never" = "Jamais";
+
+/* No comment provided by engineer. */
+"Newer version" = "Nouvelle version";
+
+/* No comment provided by engineer. */
+"Original" = "Original";
+
+/* No comment provided by engineer. */
+"Overwrite" = "Remplacer";
+
+/* No comment provided by engineer. */
+"Press 'Cancel' to abort." = "Cliquer sur 'Annuler' pour interrompre.";
+
+/* No comment provided by engineer. */
+"This is an external script that has not been tested." = "Ceci est un script externe qui n’a pas encore été testé.";
+
+/* No comment provided by engineer. */
+"wants to make changes." = "désire effectuer des modifications.";
+
+/* No comment provided by engineer. */
+"You are running it at your own risk." = "À utiliser à vos risques et périls.";
+
+/* No comment provided by engineer. */
+"You have version" = "La version en cours est";
+

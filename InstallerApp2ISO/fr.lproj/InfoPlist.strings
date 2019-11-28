@@ -1,0 +1,6 @@
+/* Bundle name */
+"CFBundleName" = "InstallerApp2ISO";
+
+/* Copyright (human-readable) */
+"NSHumanReadableCopyright" = "Copyright © 2019 Bryan Christianson. Tous droits réservés.";
+

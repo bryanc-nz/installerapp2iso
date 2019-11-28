@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15400" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="15505" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15400"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="15505"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -40,10 +40,10 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" imageFrameStyle="grayBezel" image="DropApp" id="PO2-6B-oG1"/>
                     </imageView>
-                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="wyT-Sl-cD8">
-                        <rect key="frame" x="29" y="211" width="104" height="14"/>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" preferredMaxLayoutWidth="100" id="wyT-Sl-cD8">
+                        <rect key="frame" x="29" y="176" width="104" height="48"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="small" lineBreakMode="clipping" alignment="center" placeholderString="Drop Installer File" id="nkK-fc-Hoq">
+                        <textFieldCell key="cell" controlSize="small" alignment="center" placeholderString="Drop Installer File" id="nkK-fc-Hoq">
                             <font key="font" metaFont="message" size="11"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -73,7 +73,7 @@ Gw
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" id="pMq-Ey-Etj">
-                        <rect key="frame" x="239" y="150" width="140" height="25"/>
+                        <rect key="frame" x="239" y="150" width="120" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Quiet" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="yoS-1Z-V9A" id="O5X-QZ-dMn">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -143,7 +143,7 @@ Gw
                         </connections>
                     </button>
                     <button verticalHuggingPriority="750" id="fkl-j3-3JN">
-                        <rect key="frame" x="385" y="153" width="128" height="18"/>
+                        <rect key="frame" x="363" y="153" width="223" height="18"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="check" title="&quot;Dry&quot; run" bezelStyle="regularSquare" imagePosition="left" inset="2" id="pWH-gU-eFh">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -151,7 +151,7 @@ Gw
                         </buttonCell>
                     </button>
                     <button verticalHuggingPriority="750" id="4SC-Pw-3dQ">
-                        <rect key="frame" x="455" y="110" width="130" height="32"/>
+                        <rect key="frame" x="455" y="110" width="166" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Show in Finder" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="0bc-Fv-Hfp">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -189,7 +189,7 @@ Gw
                         </scroller>
                     </scrollView>
                     <button verticalHuggingPriority="750" id="6Kd-v2-mAB">
-                        <rect key="frame" x="381" y="110" width="70" height="32"/>
+                        <rect key="frame" x="359" y="110" width="100" height="32"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <buttonCell key="cell" type="push" title="Go" bezelStyle="rounded" image="ISO" imagePosition="left" alignment="center" borderStyle="border" imageScaling="proportionallyUpOrDown" inset="2" id="je1-2c-wHj">
                             <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -200,7 +200,7 @@ Gw
                         </connections>
                     </button>
                     <popUpButton verticalHuggingPriority="750" id="dOc-7o-xPO">
-                        <rect key="frame" x="239" y="114" width="140" height="25"/>
+                        <rect key="frame" x="239" y="114" width="120" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                         <popUpButtonCell key="cell" type="push" title="Create ISO" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="M8s-8C-eNU" id="lGk-CH-9MG">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -217,7 +217,7 @@ Gw
                         </connections>
                     </popUpButton>
                     <progressIndicator wantsLayer="YES" horizontalHuggingPriority="750" verticalHuggingPriority="750" maxValue="100" bezeled="NO" indeterminate="YES" controlSize="small" style="spinning" id="r6x-g7-syf">
-                        <rect key="frame" x="592" y="120" width="16" height="16"/>
+                        <rect key="frame" x="592" y="153" width="16" height="16"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     </progressIndicator>
                 </subviews>

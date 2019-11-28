@@ -1,0 +1,30 @@
+/* Class = "NSButtonCell"; title = "OK"; ObjectID = "2FX-Dh-3AP"; */
+"2FX-Dh-3AP.title" = "OK";
+
+/* Class = "NSTextFieldCell"; title = "VDI File Parameters"; ObjectID = "i8M-D7-cE0"; */
+"i8M-D7-cE0.title" = "Paramètres du fichier VDI";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "Jzu-4a-Ex4"; */
+"Jzu-4a-Ex4.title" = "Annuler";
+
+/* Class = "NSTextFieldCell"; title = "40"; ObjectID = "K3A-Es-uqw"; */
+"K3A-Es-uqw.title" = "40";
+
+/* Class = "NSTextFieldCell"; title = ".vdi"; ObjectID = "PXZ-ef-3N0"; */
+"PXZ-ef-3N0.title" = ".vdi";
+
+/* Class = "NSWindow"; title = "VDI Parameters"; ObjectID = "QvC-M9-y7g"; */
+"QvC-M9-y7g.title" = "Paramètres VDI";
+
+/* Class = "NSTextFieldCell"; title = "GB"; ObjectID = "QxH-vO-vZw"; */
+"QxH-vO-vZw.title" = "Go";
+
+/* Class = "NSTextFieldCell"; title = "Size"; ObjectID = "VD4-X5-j6S"; */
+"VD4-X5-j6S.title" = "Taille";
+
+/* Class = "NSTextFieldCell"; title = "Name"; ObjectID = "W9f-98-T9O"; */
+"W9f-98-T9O.title" = "Nom";
+
+/* Class = "NSTextFieldCell"; title = "VMDisk"; ObjectID = "Xdl-kE-p5R"; */
+"Xdl-kE-p5R.title" = "VMDisk";
+
