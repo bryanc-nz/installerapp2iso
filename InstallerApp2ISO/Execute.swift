@@ -23,6 +23,28 @@
 import Foundation
 
 class Execute {
+	static func shell(_ cmd: String) -> String?
+	{
+		let sh = "/bin/sh"
+		let args = ["-c", cmd]
+
+		let proc = Process()
+		proc.launchPath = sh
+		proc.arguments = args
+
+		let outpipe = Pipe()
+		proc.standardOutput = outpipe
+		let errpipe = Pipe()
+		proc.standardError = errpipe
+		proc.launch()
+
+		let outdata = outpipe.fileHandleForReading.readDataToEndOfFile()
+		guard let s = String(data: outdata, encoding: .utf8) else { return nil }
+
+		proc.waitUntilExit()
+
+		return s
+	}
 	static func checkCodeValidity()
 	{
 		/*

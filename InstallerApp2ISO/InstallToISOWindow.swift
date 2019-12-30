@@ -92,6 +92,22 @@ class InstallToISOWindow : NSWindowController {
 		return Files.fileExists(virtualbox)
 	}
 
+	var virtualboxVersion : String? {
+		if !virtualboxInstalled { return nil }
+		let version = Execute.shell("/Applications/VirtualBox.app/Contents/MacOS/VBoxManage -v")
+		return version
+	}
+
+	var vboxHasAPFS: Bool {
+		guard let version = virtualboxVersion else { return false }
+		guard let components = version.split(".") else { return false }
+		if components.count < 2 { return false }
+		guard let major = Int(components[0]) else { return false }
+		guard let minor = Int(components[1]) else { return false }
+
+		return major >= 6 && minor >= 1
+	}
+
 	override func windowDidLoad()
 	{
 		m_drop_target.fileCheck = isValidInstaller
@@ -239,6 +255,7 @@ class InstallToISOWindow : NSWindowController {
 			break
 
 		case .CREATE_VDI:
+			warnVBoxAPFS()
 			image = NSImage(named: "VDI")
 			break
 		}
@@ -498,6 +515,27 @@ class InstallToISOWindow : NSWindowController {
 				break
 
 			case .alertThirdButtonReturn:
+				break
+
+			default:
+				break
+			}
+		}
+	}
+
+	func warnVBoxAPFS()
+	{
+		if !vboxHasAPFS { return }
+		let alert: NSAlert = NSAlert()
+		alert.addButton(withTitle: NSLocalizedString("OK", comment: ""))
+		alert.messageText = NSLocalizedString("Not required for VirtualBox version ≥ 6.1.0", comment: "")
+
+		let info = NSLocalizedString("VirtualBox 6.1.0 and later do not require the installation of an apfs driver in the EFI partition.", comment: "")
+		alert.informativeText = info
+		alert.beginSheetModal(for: window!) {
+			response in
+			switch response {
+			case .alertFirstButtonReturn:
 				break
 
 			default:
