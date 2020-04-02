@@ -31,18 +31,14 @@ $(ARCHIVE): clean
 	-archivePath $(ARCHIVE) \
 	archive
 
-archive: $(ARCHIVE)
-
-$(EXPORT): archive
+$(EXPORT): $(ARCHIVE)
 	$(XCODE) \
 	-exportArchive \
 	-archivePath $(ARCHIVE) \
 	-exportPath $(EXPORT) \
 	-exportOptionsPlist $(DIR)/$(SRC)/ExportOptions.plist
 
-export: $(EXPORT)
-
-$(NOTARIZED): export
+$(NOTARIZED): $(EXPORT)
 	rm -rf $(NOTARIZED)
 	while true; do \
 		date; \
@@ -57,6 +53,7 @@ $(NOTARIZED): export
 		echo wait 10s...; \
 		sleep 10; \
 	done
+	test -e $(NOTARIZED) && $(XCRUN) stapler staple $(NOTARIZED)
 
 notarized: $(NOTARIZED)
 
