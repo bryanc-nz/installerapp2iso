@@ -77,6 +77,9 @@ my_revision()
     echo ""
     echo "Version history:"
     echo ""
+    echo "  2020-07-27"
+    echo "      - Added support for 10.15.5, 10.15.6."
+    echo ""
     echo "  2020-04-03"
     echo "      - Added support for 10.15.3, 10.15.4."
     echo ""
@@ -580,7 +583,7 @@ case $MY_OSXVERSION in
         MY_OSXSCRIPT="10.13-10.15";;
     10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5|10.14.6)
         MY_OSXSCRIPT="10.13-10.15";;
-    10.15|10.15.1|10.15.2|10.15.3|10.15.4)
+    10.15|10.15.1|10.15.2|10.15.3|10.15.4|10.15.5|10.15.6)
         MY_OSXSCRIPT="10.13-10.15";;
     *)
         echo "*** ERROR: Invalid OSX version specified: $MY_OSXVERSION";
