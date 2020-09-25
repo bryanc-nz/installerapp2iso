@@ -2,7 +2,7 @@
 #
 # Script to create an ISO from the Apple application installers.
 #
-# Copyright (C) 2017-2019, socratis @ VirtualBox forums,
+# Copyright (C) 2017-2020, socratis @ VirtualBox forums,
 #          with help from granada29 @ VirtualBox forums.
 #
 # This file is free software; you can redistribute it and/or modify it
@@ -61,8 +61,8 @@ clear
 echo "================================================================================"
 echo "Apple OSX Installer Application to ISO creation tool"
 echo "================================================================================"
-echo "Version: 2019-11-27"
-echo "Copyright (C) 2017-2019, socratis @ VirtualBox forums,"
+echo "Version: 2020-09-25"
+echo "Copyright (C) 2017-2020, socratis @ VirtualBox forums,"
 echo "         with help from granada29 @ VirtualBox forums."
 echo "All rights reserved."
 echo ""
@@ -76,6 +76,9 @@ my_revision()
 {
     echo ""
     echo "Version history:"
+    echo ""
+    echo "  2020-09-25"
+    echo "      - Added support for 10.15.7."
     echo ""
     echo "  2020-07-27"
     echo "      - Added support for 10.15.5, 10.15.6."
@@ -583,7 +586,7 @@ case $MY_OSXVERSION in
         MY_OSXSCRIPT="10.13-10.15";;
     10.14|10.14.1|10.14.2|10.14.3|10.14.4|10.14.5|10.14.6)
         MY_OSXSCRIPT="10.13-10.15";;
-    10.15|10.15.1|10.15.2|10.15.3|10.15.4|10.15.5|10.15.6)
+    10.15|10.15.1|10.15.2|10.15.3|10.15.4|10.15.5|10.15.6|10.15.7)
         MY_OSXSCRIPT="10.13-10.15";;
     *)
         echo "*** ERROR: Invalid OSX version specified: $MY_OSXVERSION";
