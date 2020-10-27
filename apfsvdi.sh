@@ -124,7 +124,7 @@ make_sparse()
 	#
 	# attach the sparse bundle and get the device ids for the file systems
 	#
-	showprogress hdiutil attach \"$sparse\" -nomount > \"$volumes\"
+	showprogress hdiutil attach \"$sparse\" -nomount > "$volumes"
 	hdiutil attach "$sparse" -nomount > "$volumes"
 	errorcheck $? "Cannot attach $sparse"
 
